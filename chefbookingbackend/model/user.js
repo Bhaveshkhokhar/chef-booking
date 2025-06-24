@@ -6,18 +6,16 @@ const addressSchema = new mongoose.Schema({
   postalCode: String,
   country: {
     type: String,
-    default: 'India',
+    default: "India",
   },
 });
 const UserSchema = new mongoose.Schema({
-    name: {
+  name: {
     type: String,
     required: true,
   },
   email: {
     type: String,
-    required: true,
-    unique: true,
     lowercase: true,
     trim: true,
   },
@@ -32,8 +30,19 @@ const UserSchema = new mongoose.Schema({
   },
   profileImage: {
     type: String, // URL or file path
-    default: '',
+    default: "",
   },
-  address: addressSchema,
+  birthday: {
+    type: Date,
+  },
+  address: {
+    type:String,  
+    default:"",
+  },
+  gender:{
+    type:String,
+    enum:["Male","Female","Other"],
+    default:"Male",
+  }
 });
-module.exports=mongoose.model("User",UserSchema);
+module.exports = mongoose.model("User", UserSchema);

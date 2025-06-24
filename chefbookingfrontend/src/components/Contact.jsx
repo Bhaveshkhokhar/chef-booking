@@ -1,5 +1,76 @@
+import { useRef } from "react";
 import styles from "./Contact.module.css";
+
 const Contact = () => {
+  const name = useRef();
+  const mobile = useRef();
+  const email = useRef();
+  const city = useRef();
+  const message = useRef();
+
+  const handlesubmit = (e)=>{
+    e.preventDefault();
+    // Validate form fields
+    var nameRegex = /^[a-zA-Z\s]+$/;
+    const isname= nameRegex.test(name.current.value);
+    if (!isname) {
+      alert("Please enter a valid name (letters and spaces only).");
+      name.current.focus();
+      return;
+    }
+    const contactData = {
+      name: name.current.value,
+      mobile: mobile.current.value,
+      email: email.current.value,
+      city: city.current.value,
+      message: message.current.value,
+    };
+
+    fetch("http://localhost:3001/contact", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(contactData),
+    })
+      .then(async(response) => {
+        const data= await response.json()
+        if (!response.ok) {
+          if(response.status === 422) {
+            // Handle validation error
+            alert(`Validation Error: ${data.message}`);
+            if (data.field === "name") {
+              name.current.focus();
+            } else if (data.field === "mobile") {
+              mobile.current.focus();
+            } else if (data.field === "email") {
+              email.current.focus();
+            } else if (data.field === "city") {
+              city.current.focus();
+            } 
+            return;
+          }
+          throw new Error( "Something went wrong");
+        }
+      
+        return data;
+      })
+      .then((data) => {
+        console.log("Success:", data);
+        alert("Your request has been submitted successfully.");
+        // Reset form fields
+        name.current.value = "";
+        mobile.current.value = "";
+        email.current.value = "";
+        city.current.value = "";
+        message.current.value = "";
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        alert("There was an error submitting your request. Please try again.");
+      });
+  }
+  
   return (
     <>
       <div
@@ -25,7 +96,7 @@ const Contact = () => {
             <div class="modal-dialog">
               {" "}
               <div
-                class="modal-content rounded-4 shadow"
+                class="modal-content rounded-5 shadow"
                 style={{ backgroundColor: "#C4A484", color: "white" }}
               >
                 {" "}
@@ -37,15 +108,17 @@ const Contact = () => {
                 </div>{" "}
                 <div class="modal-body p-5 pt-0">
                   {" "}
-                  <form class="">
+                  <form  onSubmit={(e)=>handlesubmit(e)}>
                     {" "}
                     <div class="form-floating mb-3">
                       {" "}
                       <input
                         type="text"
+                        ref={name}
                         class="form-control rounded-3"
                         id="name"
                         placeholder="name"
+                        required
                       />{" "}
                       <label for="name">Name</label>{" "}
                     </div>{" "}
@@ -54,9 +127,11 @@ const Contact = () => {
                       <input
                         type="mobile"
                         maxLength="10"
+                        ref={mobile}
                         class="form-control rounded-3"
                         id="mobile"
                         placeholder="Mobile"
+                        required
                       />{" "}
                       <label for="mobile">Mobile</label>{" "}
                     </div>{" "}
@@ -64,9 +139,11 @@ const Contact = () => {
                       {" "}
                       <input
                         type="email"
+                        ref={email}
                         class="form-control rounded-3"
                         id="floatingInput"
                         placeholder="name@example.com"
+                        required
                       />{" "}
                       <label for="floatingInput">Email address</label>{" "}
                     </div>{" "}
@@ -74,6 +151,7 @@ const Contact = () => {
                       <select
                         class="form-select rounded-3"
                         id="city"
+                        ref={city}
                         defaultValue=""
                         required
                       >
@@ -92,9 +170,12 @@ const Contact = () => {
                     <div class="form-floating mb-3">
                       <textarea
                         class="form-control rounded-3"
+                        ref={message}
+                        maxLength={500}
                         placeholder="Write your message here"
                         id="message"
                         style={{ height: "150px" }}
+                        required
                       ></textarea>
                       <label for="message">
                         Please write your message in detail.
@@ -105,7 +186,7 @@ const Contact = () => {
                       type="submit"
                       style={{ backgroundColor: "white", color: "#2c0600" }}
                     >
-                      Login
+                      Register Request
                     </button>{" "}
                   </form>{" "}
                 </div>{" "}

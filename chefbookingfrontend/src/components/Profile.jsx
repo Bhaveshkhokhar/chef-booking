@@ -1,5 +1,7 @@
 import styles from "./Profile.module.css";
 import { useNavigate } from "react-router-dom";
+import { useState, useRef } from "react";
+
 const Profile = () => {
   // Dummy user data (replace with real data or props/context)
   const user = {
@@ -14,11 +16,40 @@ const Profile = () => {
   };
 
   const navigate = useNavigate();
+  const [showUploadPopup, setShowUploadPopup] = useState(false);
+  const fileInputRef = useRef(null);
+  const [previewImg, setPreviewImg] = useState(user.image);
+
+  const handleUpload = () => {
+    // You can access the file with fileInputRef.current.files[0]
+    console.log("uploaded");
+    setShowUploadPopup(false);
+    // Optionally update the main profile image here if you want
+    // setUser({ ...user, image: previewImg });
+  };
+
+  const handleCancel = () => {
+    setShowUploadPopup(false);
+    setPreviewImg(user.image); // Reset preview on cancel
+  };
+
+  // Handle file input change to preview image
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewImg(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
     <div className={`container py-5 ${styles.profileContainer}`}>
-      <div className="row justify-content-center">
-        <div className="col-12 col-md-8 col-lg-6">
-          <div className={`card shadow-sm p-4 ${styles.profileCard}`}>
+      <div className="row justify-content-center ">
+        <div className="col-12 col-md-8 col-lg-6 ">
+          <div className={`card shadow-sm p-4  rounded-5 ${styles.profileCard}`}>
             <div className="d-flex flex-column align-items-center">
               <img
                 src={user.image}
@@ -35,58 +66,203 @@ const Profile = () => {
                 }}
               />
               <div className="w-100 mt-3">
-                <p>
-                  <strong>User ID:</strong> {user.userId}
-                </p>
-                <p
-                  className="mt-4 mb-1"
+                <div
                   style={{
-                    fontWeight: "bold",
-                    color: "#6c4f27",
-                    letterSpacing: "1px",
+                    border: "2px solid #C4A484",
+                    borderRadius: "12px",
+                    background: "white",
+                    padding: "1rem",
+                    marginBottom: "1.5rem",
                   }}
                 >
-                  Contact Info :
-                </p>
-                <p>
-                  <strong>Email:</strong> {user.email}
-                </p>
-                <p>
-                  <strong>Phone:</strong> {user.phone}
-                </p>
-                <p>
-                  <strong>Address:</strong> {user.address}
-                </p>
-                <p
-                  className="mt-4 mb-1"
+                  <p
+                    className="mb-1"
+                    style={{
+                      fontWeight: "bold",
+                      color: "#6c4f27",
+                      letterSpacing: "1px",
+                    }}
+                  >
+                    Contact Info :
+                  </p>
+                  <p>
+                    <strong>Email:</strong> {user.email}
+                  </p>
+                  <p>
+                    <strong>Phone:</strong> {user.phone}
+                  </p>
+                  <p>
+                    <strong>Address:</strong> {user.address}
+                  </p>
+                </div>
+                <div
                   style={{
-                    fontWeight: "bold",
-                    color: "#6c4f27",
-                    letterSpacing: "1px",
+                    border: "2px solid #C4A484",
+                    borderRadius: "12px",
+                    background: "white",
+                    padding: "1rem",
                   }}
                 >
-                  Basic Info :
-                </p>
-                <p>
-                  <strong>Birthday:</strong> {user.birthday}
-                </p>
-                <p>
-                  <strong>Gender:</strong> {user.gender}
-                </p>
+                  <p
+                    className="mb-1"
+                    style={{
+                      fontWeight: "bold",
+                      color: "#6c4f27",
+                      letterSpacing: "1px",
+                    }}
+                  >
+                    Basic Info :
+                  </p>
+                  <p>
+                    <strong>Birthday:</strong> {user.birthday}
+                  </p>
+                  <p>
+                    <strong>Gender:</strong> {user.gender}
+                  </p>
+                </div>
               </div>
-              <button
-                type="button"
-                className={`${styles["Button"]}  mb-3`}
-                onClick={()=>{navigate("/editprofile");}}
-
-                // onClick={() => ...} // Add your edit handler here
-              >
-                Edit Profile
-              </button>
+              <div className="d-flex justify-content-center gap-3 mt-3">
+                <button
+                  type="button"
+                  className={`${styles["Button"]} mb-3`}
+                  onClick={() => {
+                    navigate("/profiledetailUpdate");
+                  }}
+                >
+                  Edit Profile
+                </button>
+                <button
+                  type="button"
+                  className={`${styles["Button"]} mb-3`}
+                  onClick={() => setShowUploadPopup(true)}
+                >
+                  Change Profile Picture
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Popup Modal for Upload */}
+      {showUploadPopup && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            background: "rgba(0,0,0,0.35)",
+            zIndex: 1050,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            backdropFilter: "blur(2px)",
+          }}
+        >
+          <div
+            style={{
+              background: "linear-gradient(135deg, #fffbe7 60%, #c4a484 100%)",
+              borderRadius: "22px",
+              padding: "2.5rem 2rem 2rem 2rem",
+              minWidth: "340px",
+              boxShadow: "0 8px 32px rgba(44,6,0,0.18)",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              border: "2px solid #C4A484",
+              position: "relative",
+              animation: "popup-fade-in 0.3s",
+            }}
+          >
+            <div
+              style={{
+                background: "#fff",
+                borderRadius: "50%",
+                width: "150px",
+                height: "150px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginBottom: "1rem",
+                boxShadow: "0 2px 8px rgba(44,6,0,0.10)",
+                border: "1px solid #C4A484",
+              }}
+            >
+              <img
+                src={previewImg}
+                alt="Profile Preview"
+                style={{
+                  width: "150px",
+                  height: "150px",
+                  objectFit: "cover",
+                  borderRadius: "50%",
+                }}
+              />
+            </div>
+            <h5
+              className="mb-3"
+              style={{
+                color: "#6c4f27",
+                fontWeight: 700,
+                letterSpacing: "1px",
+              }}
+            >
+              Upload New Profile Picture
+            </h5>
+            <input
+              type="file"
+              accept="image/*"
+              ref={fileInputRef}
+              className="form-control mb-4"
+              style={{
+                maxWidth: "250px",
+                background: "#fffbe7",
+                border: "1.5px solid #C4A484",
+                borderRadius: "8px",
+                color: "#6c4f27",
+                fontWeight: 500,
+              }}
+              onChange={handleFileChange}
+            />
+            <div className="d-flex gap-3 w-100 justify-content-center">
+              <button
+                className="btn"
+                type="button"
+                onClick={handleCancel}
+                style={{
+                  background: "#fff",
+                  color: "#C4A484",
+                  border: "1.5px solid #C4A484",
+                  borderRadius: "8px",
+                  fontWeight: 600,
+                  minWidth: "100px",
+                  transition: "all 0.2s",
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                className="btn"
+                type="button"
+                onClick={handleUpload}
+                style={{
+                  background: "#C4A484",
+                  color: "#fff",
+                  border: "1.5px solid #C4A484",
+                  borderRadius: "8px",
+                  fontWeight: 600,
+                  minWidth: "100px",
+                  transition: "all 0.2s",
+                }}
+              >
+                Upload
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

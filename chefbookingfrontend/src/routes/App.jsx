@@ -9,7 +9,7 @@ const App = () => {
     <LogininfoContextProvider>
       <Header />
       <AppContextProvider>
-        <Outlet />
+        <Outlet  />
       </AppContextProvider>
       <Footer />
     </LogininfoContextProvider>

@@ -1,11 +1,200 @@
 import { Link, useNavigate } from "react-router-dom";
 import styles from "./Signup.module.css";
+import { authContext } from "../store/Logininfostore";
+import { useContext, useRef, useState, useEffect } from "react";
+
 const Signup = () => {
+  const { handleuserProfile } = useContext(authContext);
+
   const navigate = useNavigate();
-  const handlesubmit=(event)=>{
+
+  const Number = useRef();
+  const Password = useRef();
+  const ConfirmPassword = useRef();
+  const Name = useRef();
+  const otp = useRef();
+
+  const [otpflag, setOtp] = useState(false
+//     () => {
+//   const stored = localStorage.getItem("otpflag");
+//   return stored === "true"; // convert string to boolean
+// }
+);
+
+  useEffect(() => {
+    if (otpflag && otp.current) {
+      otp.current.focus();
+    }
+  }, [otpflag]);
+
+  const handleotpverification = (event) => {
     event.preventDefault();
-    navigate("/editprofile");
-  }
+
+    if (!otpflag) {
+      // validate name
+      const isName = /^[a-zA-Z\s]+$/.test(Name.current.value.trim());
+      if (!isName || Name.current.value.trim() === "") {
+        alert("please enter a valid name");
+        Name.current.focus();
+        return;
+      }
+      // validate  number
+      const isNumber = /^[0-9]+$/.test(Number.current.value.trim());
+      if (!isNumber || Number.current.value.length !== 10) {
+        alert("please enter a valid mobile number");
+        Number.current.focus();
+        return;
+      }
+
+      // validate password and confirm password
+      if (Password.current.value !== ConfirmPassword.current.value) {
+        alert("password and confirm password do nat match");
+        ConfirmPassword.current.focus();
+        return;
+      }
+
+      fetch("http://localhost:3001/otpverification", {
+        method: "POST",
+        body: JSON.stringify({
+          Name: Name.current.value,
+          Number: Number.current.value,
+          Password: Password.current.value,
+          ConfirmPassword: ConfirmPassword.current.value,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", // Include cookies in the request
+      })
+        .then(async (res) => {
+          const data = await res.json();
+
+          if (!res.ok) {
+            if (res.status === 422) {
+              alert(data.message);
+              if (data.field === "Name") {
+                Name.current.focus();
+              } else if (data.field === "Number") {
+                Number.current.focus();
+              } else if (data.field === "Password") {
+                Password.current.focus();
+              } else {
+                ConfirmPassword.current.focus();
+              }
+              return;
+            }
+
+            if (res.status === 404) {
+              alert("Mobile number already has an account");
+              Number.current.focus();
+              return;
+            }
+
+            if (res.status === 500) {
+              alert(
+                "Internal server error during signup please try again later."
+              );
+              return;
+            }
+
+            throw new Error("Signup failed");
+          }
+
+          // everything okay
+          return data;
+        })
+        .then((data) => {
+          if (!data) return;
+          if (data.status === "otp generated") {
+            setOtp(true);
+            // localStorage.setItem("otpflag", "true");
+            // Name.current.value = "";
+            // Number.current.value = "";
+            // Password.current.value = "";
+            // ConfirmPassword.current.value = "";
+
+            // handleuserProfile(true);
+            // navigate("/profiledetail/add");
+            alert("otp sent to your mobile number");
+          }
+        })
+        .catch((err) => {
+          console.error("Error during signup:", err);
+          alert("An error occurred during signup. Please try again.");
+        });
+    } else {
+
+      // validate otp
+      const isOtp = /^[0-9]+$/.test(otp.current.value.trim());
+      if (!isOtp || otp.current.value.length !== 4) {
+        alert("please enter a valid otp");
+        otp.current.focus();
+        return;
+      }
+
+      fetch("http://localhost:3001/signup", {
+        method: "POST",
+        body: JSON.stringify({
+          Otp: otp.current.value,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", // Include cookies in the request
+      })
+        .then(async (res) => {
+          const data = await res.json();
+
+          if (!res.ok) {
+            if (res.status === 400) {
+              alert(data.message);
+              if (data.message === "OTP session expired or not found") {
+                setOtp(false);
+                // localStorage.setItem("otpflag", "false");
+                Name.current.value = "";
+                Number.current.value = "";
+                Password.current.value = "";
+                ConfirmPassword.current.value = "";
+                Name.current.focus();
+              } else {
+                otp.current.focus();
+              }
+              return;
+            }
+
+            if (res.status === 500) {
+              alert(
+                "Internal server error during signup please try again later."
+              );
+              return;
+            }
+
+            throw new Error("Signup failed");
+          }
+
+          // everything okay
+          return data;
+        })
+        .then((data) => {
+          if (!data) return;
+          if (data.status === "success") {
+            setOtp(false);
+            // localStorage.setItem("otpflag", "false");
+            Name.current.value = "";
+            Number.current.value = "";
+            Password.current.value = "";
+            ConfirmPassword.current.value = "";      
+            alert("User signed up successfully");
+            handleuserProfile(true);
+            navigate("/profiledetailAdd");
+          }
+        })
+        .catch((err) => {
+          console.error("Error during signup:", err);
+          alert("An error occurred during signup. Please try again.");
+        });
+    }
+  };
   return (
     <>
       <div
@@ -18,19 +207,30 @@ const Signup = () => {
         <div class="modal-dialog">
           {" "}
           <div
-            class="modal-content rounded-4 shadow"
+            class="modal-content rounded-5 shadow"
             style={{ backgroundColor: "#C4A484", color: "white" }}
           >
-            {" "}
-            <div class="modal-header p-5 pb-4 border-bottom-0">
+            <div className="w-100 d-flex justify-content-center mt-4 mb-0 ">
+              <img
+                src="/assets/Chefwalelogo.png"
+                alt="ChefWale Logo"
+                style={{ width: "90px", height: "90px", objectFit: "contain" }}
+              />
+            </div>{" "}
+            <div class="modal-header p-2 pb-4 border-bottom-0 justify-content-center">
               {" "}
               <h1 class="fw-bold mb-0 fs-2">Sign up</h1>{" "}
             </div>{" "}
             <div class="modal-body p-5 pt-0">
               {" "}
-              <form class="" onSubmit={(event)=>{ handlesubmit(event);}} >
+              <form
+                class=""
+                onSubmit={(event) => {
+                  handleotpverification(event);
+                }}
+              >
                 {" "}
-                <div class="form-floating mb-3">
+                <div class="form-floating mb-3 text-center">
                   {" "}
                   <small class=" mb-3">
                     Please Sign up to booking now
@@ -39,52 +239,62 @@ const Signup = () => {
                 <div class="form-floating mb-3">
                   {" "}
                   <input
-                    type="email"
+                    ref={Name}
+                    type="text"
                     class="form-control rounded-3"
-                    id="floatingInput"
-                    placeholder="name@example.com"
+                    id="name"
+                    placeholder="name"
+                    disabled={otpflag}
+                    required
                   />{" "}
-                  <label for="floatingInput">Email address</label>{" "}
+                  <label for="name">name</label>{" "}
                 </div>{" "}
                 <div class="form-floating mb-3">
                   {" "}
                   <input
+                    ref={Number}
+                    type="text"
+                    class="form-control rounded-3"
+                    id="floatingInput"
+                    placeholder="mobile number"
+                    disabled={otpflag}
+                    required
+                  />{" "}
+                  <label for="floatingInput">Mobile number</label>{" "}
+                </div>{" "}
+                <div class="form-floating mb-3">
+                  {" "}
+                  <input
+                    ref={Password}
                     type="password"
                     class="form-control rounded-3"
                     id="floatingPassword"
                     placeholder="Password"
+                    disabled={otpflag}
+                    required
                   />{" "}
                   <label for="floatingPassword">Create new Password</label>{" "}
                 </div>{" "}
                 <div class="form-floating mb-3">
                   {" "}
                   <input
+                    ref={ConfirmPassword}
                     type="password"
                     class="form-control rounded-3"
-                    id="floatingPasswordC"
+                    id="confirmPassword"
                     placeholder="confirmPassword"
+                    disabled={otpflag}
+                    required
                   />{" "}
-                  <label for="floatingPasswordC">Confirm new Password</label>{" "}
+                  <label for="confirmPassword">Confirm new Password</label>{" "}
                 </div>{" "}
-                <div class="form-check text-start my-3">
-                  {" "}
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value="remember-me"
-                    id="checkDefault"
-                  />{" "}
-                  <label class="form-check-label" for="checkDefault">
-                    Remember me
-                  </label>{" "}
-                </div>
                 <button
-                  onClick={() => navigate("/addDetail")}
                   class={`${styles["signup-pop-button"]} w-100 mb-2 btn btn-lg rounded-3`}
                   type="submit"
                   style={{ backgroundColor: "white", color: "#2c0600" }}
+                  disabled={otpflag}
                 >
-                  Sign up
+                  Sent OTP
                 </button>{" "}
                 <p>
                   Already have an account?{" "}
@@ -95,6 +305,41 @@ const Signup = () => {
                     Login here
                   </Link>
                 </p>
+                {otpflag && (
+                  <>
+                    <div class="form-floating mb-3">
+                      {" "}
+                      <input
+                        ref={otp}
+                        type="text"
+                        class="form-control rounded-3"
+                        id="otp"
+                        placeholder="Enter otp here"
+                        required
+                      />{" "}
+                      <label for="otp">Enter otp here</label>{" "}
+                    </div>
+                    <div class="form-check text-start my-3">
+                      {" "}
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        value="remember-me"
+                        id="checkDefault"
+                      />{" "}
+                      <label class="form-check-label" for="checkDefault">
+                        Remember me
+                      </label>{" "}
+                    </div>
+                    <button
+                      class={`${styles["signup-pop-button"]} w-100 mb-2 btn btn-lg rounded-3`}
+                      type="submit"
+                      style={{ backgroundColor: "white", color: "#2c0600" }}
+                    >
+                      Signup
+                    </button>
+                  </>
+                )}
               </form>{" "}
             </div>{" "}
           </div>{" "}

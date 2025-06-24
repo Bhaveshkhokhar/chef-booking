@@ -4,9 +4,43 @@ import { useContext, useState } from "react";
 import { authContext } from "../store/Logininfostore";
 
 const Header = () => {
-  const { loginstate } = useContext(authContext);
+  const { loginstate ,handleuserProfile} = useContext(authContext);
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+  const handlesignout = (e) => {
+    // e.preventDefault();
+
+    fetch("http://localhost:3001/logout",{
+      method: "POST",
+      credentials: "include",})
+    .then(async(res)=>{
+      const data=await res.json();
+      if(!res.ok){
+        if(res.status===400){
+          alert("You are not logged in");
+          return ;
+        }
+        else if(res.status===500){
+          alert("Internal server error. Please try again later.");
+          return;
+        }
+        throw new Error("Logout failed ");
+      }
+      return data;
+    })
+    .then((data)=>{
+      if (!data) return;
+      if(data.status==="success"){
+        handleuserProfile(false);
+        navigate("/");
+        alert("You have been logged out successfully");
+      }
+    })
+    .catch((err)=>{
+      console.error("Logout error:", err);
+      alert("An error occurred while logging out. Please try again.");
+    })
+  };
 
   return (
     <header className={`${styles["grad"]} p-3 border-bottom`}>
@@ -160,7 +194,7 @@ const Header = () => {
                     <li>
                       <button
                         className="dropdown-item"
-                        onClick={() => navigate("/")}
+                        onClick={(e) => handlesignout(e)}
                       >
                         Sign out
                       </button>

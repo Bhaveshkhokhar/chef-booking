@@ -11,11 +11,11 @@ import Login from "./components/Login.jsx";
 import Allchef from "./components/Allchef.jsx";
 import Contact from "./components/Contact.jsx";
 import Signup from "./components/Signup.jsx";
-import Adddetail from "./components/Adddetail.jsx";
 import Chef from "./components/chef.jsx";
 import Profile from "./components/Profile.jsx";
 import Yourbooking from "./components/yourbooking.jsx";
-import EditProfile from "./components/EditProfile.jsx";
+import ProfileDetailAdd from "./components/ProfileDetailAdd.jsx";
+import ProfileDetailUpdate from "./components/ProfileDetailUpdate.jsx";
 
 const router = createBrowserRouter([
   {
@@ -28,11 +28,11 @@ const router = createBrowserRouter([
       { path: "/chefs/:type", element: <Allchef /> },
       { path: "/contact", element: <Contact /> },
       { path: "/sign-up", element: <Signup /> },
-      { path: "/addDetail", element: <Adddetail /> },
       { path: "/chef/:chefid", element: <Chef /> },
       { path: "/profile", element: <Profile /> },
       { path: "/yourbooking", element: <Yourbooking /> },
-      { path: "/editprofile", element: <EditProfile /> },
+      { path: "/profiledetailAdd", element: <ProfileDetailAdd /> },
+      { path: "/profiledetailUpdate", element: <ProfileDetailUpdate /> },
     ],
   },
 ]);
