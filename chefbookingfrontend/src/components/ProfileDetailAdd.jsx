@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useContext } from "react";
 import styles from "./ProfileDetailAdd.module.css";
 import {
   FaUser,
@@ -7,29 +7,34 @@ import {
   FaTransgender,
   FaBirthdayCake,
 } from "react-icons/fa";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { authContext } from "../store/authStore";
+import { UserStore } from "../store/UserdataStore";
 
 const ProfileDetailAdd = () => {
-  const { name } = useParams();
+  const { handleuserProfile } = useContext(authContext);
+  const { user, handleUpdate } = useContext(UserStore);
+  const location = useLocation();
+  const name = location.state?.Name;
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
   const Name = useRef();
-  const image = useRef();
   const Email = useRef();
   const Address = useRef();
   const Birthdate = useRef();
   const Gender = useRef();
-
+  const [previewImg, setPreviewImg] = useState(
+    "http://localhost:3001/defaultpic.jpg"
+  );
+  const [selectedFile, setSelectedFile] = useState(null);
   // Handle image upload and preview
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      setSelectedFile(file); // Save the file for upload
       const reader = new FileReader();
       reader.onloadend = () => {
-        setUser((prev) => ({
-          ...prev,
-          image: reader.result,
-        }));
+        setPreviewImg(reader.result);
       };
       reader.readAsDataURL(file);
     }
@@ -41,7 +46,80 @@ const ProfileDetailAdd = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert("Profile updated!");
+    const isName = /^[a-zA-Z\s]+$/.test(Name.current.value.trim());
+    if (!isName || Name.current.value.trim() === "") {
+      alert("please enter a valid name");
+      Name.current.focus();
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("Name", Name.current.value);
+    formData.append("Email", Email.current.value);
+    formData.append("Address", Address.current.value);
+    formData.append("Birthdate", Birthdate.current.value);
+    formData.append("Gender", Gender.current.value);
+    if (selectedFile) {
+      formData.append("image", selectedFile);
+    }
+    fetch("http://localhost:3001/addUserData", {
+      method: "POST",
+      body: formData,
+      credentials: "include",
+    })
+      .then(async (res) => {
+        const data = await res.json();
+        if (!res.ok) {
+          if (res.status === 422) {
+            alert(data.message);
+            if (data.field === "Name") {
+              Name.current.focus();
+            } else if (data.field === "Email") {
+              Email.current.focus();
+            } else if (data.field === "Gender") {
+              Gender.current.focus();
+            } else {
+              Birthdate.current.focus();
+            }
+            return;
+          } else if (res.status == 401) {
+            alert(data.message);
+            handleuserProfile(data.isLoggedIn);
+            navigate("/login");
+            return;
+          } else if (res.status == 404) {
+            alert(data.message);
+            handleuserProfile(data.isLoggedIn);
+            navigate("/sign-up");
+            return;
+          } else if (res.status == 500) {
+            alert(data.message);
+            return;
+          }
+          throw new Error("adding data failed");
+        }
+        return data;
+      })
+      .then((data) => {
+        if (!data) return;
+        if (data.status === "success") {
+          handleUpdate({
+            name: Name.current.value,
+            email: Email.current.value,
+            birthdate: Birthdate.current.value,
+            gender: Gender.current.value,
+            address: Address.current.value,
+            number: user.number,
+            image:data.image,
+          });
+          alert("profile added");
+          navigate("/");
+        }
+      })
+      .catch((err) => {
+        console.error("Error during adding data:", err);
+        alert("An error occurred during uploading. Please try again.");
+      });
   };
 
   return (
@@ -55,7 +133,7 @@ const ProfileDetailAdd = () => {
           >
             <div className="d-flex flex-column align-items-center mb-3">
               <img
-                src="/assets/defaultpic.jpg"
+                src={previewImg}
                 alt={name}
                 className={`rounded-circle mb-3 ${styles.profileImage}`}
                 style={{
@@ -80,9 +158,6 @@ const ProfileDetailAdd = () => {
             </div>
 
             {/* ...rest of your form fields... */}
-
-            {/* ...rest of your form fields remain unchanged... */}
-            {/* (Keep all your other fields as before) */}
             <div className="mb-3">
               <label className="form-label">Name</label>
               <div className="input-group">

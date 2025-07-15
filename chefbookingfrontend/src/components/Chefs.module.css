@@ -1,0 +1,4 @@
+.cantainer{
+  display: flex;
+  flex-wrap: wrap;
+}

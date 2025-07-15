@@ -21,7 +21,11 @@ const Chefcard = ({ chef }) => {
             margin: "10px",
           }}
         >
-          <img src={chef.pic} class="card-img-top" alt={chef.name} />
+          <img
+            src={`http://localhost:3001${chef.pic}`}
+            class="card-img-top"
+            alt={chef.name}
+          />
           <div class="card-body" style={{ textAlign: "left" }}>
             <h6 class="card-title">{chef.name}</h6>
             <p class="card-text">

@@ -1,5 +1,9 @@
 const { Contact } = require("../model/contact");
 const { check, validationResult } = require("express-validator");
+const jwt = require("jsonwebtoken");
+const Host = require("../model/host");
+require("dotenv").config();
+const secret = process.env.SECRET_KEY;
 exports.createContact = [
   check("name")
     .trim()
@@ -70,3 +74,90 @@ exports.createContact = [
     }
   },
 ];
+exports.getRequests = async (req, res, next) => {
+  const token = req.cookies.host_token;
+  if (!token) {
+    return res.status(401).json({
+      isLoggedIn: false,
+      message: "please login",
+    });
+  }
+  try {
+    let decoded;
+    try {
+      decoded = jwt.verify(token, secret);
+      // token is valid
+    } catch (err) {
+      // token is invalid or expired
+      return res.status(401).json({
+        isLoggedIn: false,
+        message: "host is not authenticated please login",
+      });
+    }
+
+    const host = await Host.findOne({ hostid: decoded.Hostid });
+
+    if (!host) {
+      return res.status(404).json({
+        isLoggedIn: false,
+        message: "Host not found",
+      });
+    }
+    const requests = await Contact.find();
+
+    return res.status(201).json({
+      requests,
+      status: "success",
+    });
+  } catch (error) {
+    console.error("Error while geting data:", error);
+    return res
+      .status(500)
+      .json({ message: "Internal server error please try after some time" });
+  }
+};
+exports.read=async(req,res,next)=>{
+  const token = req.cookies.host_token;
+  if (!token) {
+    return res.status(401).json({
+      isLoggedIn: false,
+      message: "please login",
+    });
+  }
+  try {
+    let decoded;
+    try {
+      decoded = jwt.verify(token, secret);
+      // token is valid
+    } catch (err) {
+      // token is invalid or expired
+      return res.status(401).json({
+        isLoggedIn: false,
+        message: "host is not authenticated please login",
+      });
+    }
+
+    const host = await Host.findOne({ hostid: decoded.Hostid });
+
+    if (!host) {
+      return res.status(404).json({
+        isLoggedIn: false,
+        message: "Host not found",
+      });
+    }
+    const request =  await Contact.updateOne({ _id: req.body.id }, { $set: { read: true } });
+    if(!request){
+      return res.status(404).json({
+        message: " request not found",
+      });
+    }
+    return res.status(201).json({
+      status: "success",
+    });
+  } catch (error) {
+    console.error("Error while updating:", error);
+    return res
+      .status(500)
+      .json({ message: "Internal server error please try after some time" });
+  }
+};

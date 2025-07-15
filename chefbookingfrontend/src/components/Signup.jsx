@@ -1,25 +1,26 @@
 import { Link, useNavigate } from "react-router-dom";
 import styles from "./Signup.module.css";
-import { authContext } from "../store/Logininfostore";
+import { authContext } from "../store/authStore";
 import { useContext, useRef, useState, useEffect } from "react";
 
 const Signup = () => {
   const { handleuserProfile } = useContext(authContext);
 
   const navigate = useNavigate();
-
+  const rememberMe=useRef();
   const Number = useRef();
   const Password = useRef();
   const ConfirmPassword = useRef();
   const Name = useRef();
   const otp = useRef();
 
-  const [otpflag, setOtp] = useState(false
-//     () => {
-//   const stored = localStorage.getItem("otpflag");
-//   return stored === "true"; // convert string to boolean
-// }
-);
+  const [otpflag, setOtp] = useState(
+    false
+    //     () => {
+    //   const stored = localStorage.getItem("otpflag");
+    //   return stored === "true"; // convert string to boolean
+    // }
+  );
 
   useEffect(() => {
     if (otpflag && otp.current) {
@@ -107,14 +108,6 @@ const Signup = () => {
           if (!data) return;
           if (data.status === "otp generated") {
             setOtp(true);
-            // localStorage.setItem("otpflag", "true");
-            // Name.current.value = "";
-            // Number.current.value = "";
-            // Password.current.value = "";
-            // ConfirmPassword.current.value = "";
-
-            // handleuserProfile(true);
-            // navigate("/profiledetail/add");
             alert("otp sent to your mobile number");
           }
         })
@@ -123,7 +116,6 @@ const Signup = () => {
           alert("An error occurred during signup. Please try again.");
         });
     } else {
-
       // validate otp
       const isOtp = /^[0-9]+$/.test(otp.current.value.trim());
       if (!isOtp || otp.current.value.length !== 4) {
@@ -136,6 +128,7 @@ const Signup = () => {
         method: "POST",
         body: JSON.stringify({
           Otp: otp.current.value,
+          rememberMe:rememberMe.current.checked,
         }),
         headers: {
           "Content-Type": "application/json",
@@ -180,13 +173,14 @@ const Signup = () => {
           if (data.status === "success") {
             setOtp(false);
             // localStorage.setItem("otpflag", "false");
-            Name.current.value = "";
             Number.current.value = "";
             Password.current.value = "";
-            ConfirmPassword.current.value = "";      
+            ConfirmPassword.current.value = "";
             alert("User signed up successfully");
             handleuserProfile(true);
-            navigate("/profiledetailAdd");
+            navigate("/profiledetailAdd", {
+              state: { Name: Name.current.value },
+            });
           }
         })
         .catch((err) => {
@@ -212,7 +206,7 @@ const Signup = () => {
           >
             <div className="w-100 d-flex justify-content-center mt-4 mb-0 ">
               <img
-                src="/assets/Chefwalelogo.png"
+                src="http://localhost:3001/Chefwalelogo.png"
                 alt="ChefWale Logo"
                 style={{ width: "90px", height: "90px", objectFit: "contain" }}
               />
@@ -253,6 +247,8 @@ const Signup = () => {
                   {" "}
                   <input
                     ref={Number}
+                    maxLength={10}
+                    minLength={10}
                     type="text"
                     class="form-control rounded-3"
                     id="floatingInput"
@@ -324,8 +320,8 @@ const Signup = () => {
                       <input
                         class="form-check-input"
                         type="checkbox"
-                        value="remember-me"
                         id="checkDefault"
+                        ref={rememberMe}
                       />{" "}
                       <label class="form-check-label" for="checkDefault">
                         Remember me

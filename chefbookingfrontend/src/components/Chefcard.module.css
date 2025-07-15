@@ -13,3 +13,9 @@
 .green{
   color: green;
 }
+.link {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex: 1 1 0;
+}

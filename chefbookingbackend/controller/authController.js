@@ -2,7 +2,6 @@ const { check, validationResult } = require("express-validator");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const twilio = require("twilio");
-
 const User = require("../model/user");
 require("dotenv").config();
 const secret = process.env.SECRET_KEY;
@@ -12,7 +11,7 @@ const authToken = process.env.AUTHTOKEN;
 const client = twilio(accountSid, authToken);
 
 exports.getAuthStatus = async (req, res, next) => {
-  const token = req.cookies.token;
+  const token = req.cookies.user_token;
 
   if (!token) {
     return res.status(401).json({
@@ -24,8 +23,9 @@ exports.getAuthStatus = async (req, res, next) => {
   // Check if the token is valid
   // If valid, check if the user exists in the database
   try {
+    let decoded;
     try {
-      const decoded = jwt.verify(token, secret);
+       decoded = jwt.verify(token, secret);
       // token is valid
     } catch (err) {
       // token is invalid or expired
@@ -54,8 +54,8 @@ exports.getAuthStatus = async (req, res, next) => {
   }
 };
 
-exports.postlogin = async (req, res, next) => {
-  const { Number, Password } = req.body;
+exports.postLogin = async (req, res, next) => {
+  const { Number, Password,rememberMe } = req.body;
   try {
     // Check if the user exists
 
@@ -83,15 +83,15 @@ exports.postlogin = async (req, res, next) => {
         Number: user.mobile,
       },
       secret,
-      { expiresIn: "1h" }
+      { expiresIn: rememberMe?"7d":"1h"}
     );
 
     // Set the token in the response cookies
-    res.cookie("token", token, {
+    res.cookie("user_token", token, {
       httpOnly: true,
       secure: false, // Set to true if using HTTPS
       sameSite: "Lax", // Adjust based on your requirements
-      maxAge: 3600000, // 1 hour
+      maxAge: rememberMe? 604800000:3600000, // 1 hour
     });
 
     // Return a success response
@@ -109,7 +109,7 @@ exports.postlogin = async (req, res, next) => {
   }
 };
 
-exports.postotpverification = [
+exports.postOtpVerification = [
   //validate name
   check("Name")
     .trim()
@@ -220,8 +220,8 @@ exports.postotpverification = [
   },
 ];
 
-exports.postsignup = async (req, res, next) => {
-  const { Otp } = req.body;
+exports.postSignup = async (req, res, next) => {
+  const { Otp ,rememberMe} = req.body;
   if (!req.session.otp) {
     return res.status(400).json({
       status: "fail",
@@ -253,15 +253,15 @@ exports.postsignup = async (req, res, next) => {
         Number: newUser.mobile,
       },
       secret,
-      { expiresIn: "1h" }
+      { expiresIn: rememberMe?"7d":"1h" }
     );
 
     // Set the token in the response cookies
-    res.cookie("token", token, {
+    res.cookie("user_token", token, {
       httpOnly: true,
       secure: false,
       sameSite: "Lax",
-      maxAge: 3600000, // 1hour
+      maxAge: rememberMe? 604800000:3600000, // 1hour
     });
     // Clear the session after successful signup
     await req.session.destroy((err) => {
@@ -284,9 +284,9 @@ exports.postsignup = async (req, res, next) => {
   }
 };
 
-exports.postlogout = async (req, res, next) => {
+exports.postLogout = async (req, res, next) => {
   try {
-    const token = req.cookies.token;
+    const token = req.cookies.user_token;
 
     if (!token) {
       return res.status(400).json({
@@ -296,7 +296,7 @@ exports.postlogout = async (req, res, next) => {
     }
 
     // Clear the token cookie
-    res.clearCookie("token", {
+    res.clearCookie("user_token", {
       httpOnly: true,
       secure: false, // ✅ Set to true in production (HTTPS)
       sameSite: "Lax",

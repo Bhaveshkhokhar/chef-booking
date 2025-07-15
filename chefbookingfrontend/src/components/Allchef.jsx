@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import styles from "./Allchef.module.css";
 import { useNavigate, useParams } from "react-router-dom";
-import Chefs from "./chefs";
+import Chefs from "./Chefs";
 import { ServiceStore } from "../store/ServicedataStore";
 import { ChefsStore } from "../store/ChefdataStore";
 const Allchef = () => {
@@ -15,23 +15,23 @@ const Allchef = () => {
   const {chefs} =useContext(ChefsStore);
   return (
     <>
-      <div class={`${styles["chefs"]}`} style={{ margin: "30px 90px" }}>
-        <div class="container">
-          <div class="row">
+      <div className={`${styles["chefs"]}`} style={{ margin: "30px 50px" }}>
+        <div >
+          <div className="row">
             <h1 style={{ margin: "0px 0px 20px 0px ", textAlign: "left" }}>
               Find the perfect chef for every flavor and event.
             </h1>
           </div>
-          <div class="row">
-            <div class="col-md-3">
+          <div className="row">
+            <div className="col-md-3">
               <div
-                class="list-group position-sticky"
+                className="list-group position-sticky"
                 id="list-tab"
                 role="tablist"
                 style={{ margin: "20px 0px 0px 0px" }}
               >
                 <button
-                  class="list-group-item list-group-item-action"
+                  className="list-group-item list-group-item-action"
                   style={
                     type === "All Chefs"
                       ? {
@@ -49,16 +49,16 @@ const Allchef = () => {
                 >
                   All Chefs
                   <span
-                    class="position-absolute top-50 end-0 translate-middle badge rounded-pill "
+                    className="position-absolute top-50 end-0 translate-middle badge rounded-pill "
                     style={{ background: "#2c0600", color: "white" }}
                   >
                     {chefs.length}
-                    <span class="visually-hidden">unread messages</span>
+                    <span className="visually-hidden">unread messages</span>
                   </span>
                 </button>
                 {service.map((service) => (
                   <button
-                    class="list-group-item list-group-item-action "
+                    className="list-group-item list-group-item-action "
                     style={
                       type === service.type
                         ? {
@@ -76,20 +76,20 @@ const Allchef = () => {
                   >
                     {service.type}
                     <span
-                      class="position-absolute top-50 end-0 translate-middle badge rounded-pill "
+                      className="position-absolute top-50 end-0 translate-middle badge rounded-pill "
                       style={{ background: "#2c0600", color: "white" }}
                     >
                       {
                         chefs.filter((chef) => chef.type === service.type)
                           .length
                       }
-                      <span class="visually-hidden">unread messages</span>
+                      <span className="visually-hidden">unread messages</span>
                     </span>
                   </button>
                 ))}
               </div>
             </div>
-            <div class="col-9">
+            <div className="col-9">
               <Chefs type={type} chefs={chefs}></Chefs>
             </div>
           </div>

@@ -7,6 +7,7 @@ const Chef = () => {
   const { chefid } = useParams();
   const { chefs } = useContext(ChefsStore);
   const chef = chefs.find((chef) => chef.id === chefid);
+
   if(chef===undefined){
     return <></>
   }
@@ -18,7 +19,7 @@ const Chef = () => {
           {/* Chef Image */}
           <div className="col-12 col-lg-4 d-flex justify-content-center mb-3 mb-lg-0">
             <img
-              src={chef.pic}
+              src={`http://localhost:3001${chef.pic}`}
               className="img-fluid shadow-sm"
               alt={chef.name}
               style={{ borderRadius: "30px" }}
@@ -31,7 +32,7 @@ const Chef = () => {
               textAlign: "left",
               borderRadius: "30px",
               background: "#fff",
-              minHeight: "220px",
+              minHeight: "220px",   
             }}
           >
             <h1 style={{ fontSize: "2rem" }}>{chef.name}</h1>
@@ -64,10 +65,10 @@ const Chef = () => {
             </div>
           </div>
         </div>
-        {/* Booking always below on all screens */}
+        
         <div className="row mt-4">
           <div className="col-12">
-            <Booking />
+            <Booking  chef={chef}/>
           </div>
         </div>
       </div>

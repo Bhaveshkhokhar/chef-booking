@@ -9,6 +9,7 @@ const cookieparser = require("cookie-parser");
 const session = require("express-session");
 const MongodbStore = require("connect-mongodb-session")(session);
 const multer = require("multer");
+require('dotenv').config();
 
 //local module
 const rootDir = require("./utils/pathUtil");
@@ -16,12 +17,13 @@ const chefRouter = require("./routes/chefRouter");
 const serviceRouter = require("./routes/serviceRouter");
 const authRouter = require("./routes/authRouter");
 const contactRouter = require("./routes/contactRouter");
-const userRouter=require("./routes/userRouter");
-require("dotenv").config();
-const secret = process.env.SECRET_KEY;
-//mongo path
-const DB_path =process.env.DB_PATH;
+const userRouter = require("./routes/userRouter");
+const bookingRouter = require("./routes/bookingRouter");
+const bookingHistoryRouter = require("./routes/bookingHistoryRouter");
+const hostRouter = require("./routes/hostRouter");
 
+//mongo path
+const DB_path = process.env.DB_PATH;
 
 const store = new MongodbStore({
   uri: DB_path,
@@ -29,21 +31,21 @@ const store = new MongodbStore({
   ttl: 60 * 5,
 });
 
-const storage =multer.diskStorage({
-  destination:(req,file,cb)=>{
-    cb(null,path.join(rootDir,"upload"));
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(rootDir, "upload"));
   },
-  filename:(req,file,cb)=>{
-    cb(null,`${Date.now()}-${file.originalname}`);
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  },
+});
+const fileFilter = (req, file, cb) => {
+  if (["image/png", "image/jpg", "image/jpeg"].includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(null, false);
   }
-})
-const fileFilter=(req,file,cb)=>{
-  if(['image/png','image/jpg','image/jpeg'].includes(file.mimetype)){
-    cb(null,true);
-  }else{
-    cb(null,false);
-  }
-}
+};
 
 const app = express();
 //cookie parsing
@@ -55,13 +57,13 @@ app.use(express.urlencoded({ extended: true }));
 //json->javascript
 app.use(express.json());
 
-app.use(multer({storage,fileFilter}).single("image"));
+app.use(multer({ storage, fileFilter }).single("image"));
 app.use(express.static(path.join(rootDir, "public")));
-
+app.use("/upload", express.static(path.join(rootDir, "upload")));
 //session
 app.use(
   session({
-    secret: secret,
+    secret: process.env.SECRET_KEY,
     resave: false,
     saveUninitialized: false,
     store: store,
@@ -76,7 +78,7 @@ app.use(
 
 app.use(
   cors({
-    origin: "http://localhost:5173", // specify your frontend origin
+    origin: ["http://localhost:5173","http://localhost:5174"], // specify your frontend origin
     credentials: true,
   })
 );
@@ -86,6 +88,9 @@ app.use(authRouter);
 app.use(serviceRouter);
 app.use(chefRouter);
 app.use(contactRouter);
+app.use(bookingRouter);
+app.use(bookingHistoryRouter);
+app.use(hostRouter);
 
 const PORT = 3001;
 

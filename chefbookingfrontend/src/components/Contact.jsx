@@ -75,7 +75,7 @@ const Contact = () => {
     <>
       <div
         style={{
-          backgroundImage: "url('/assets/bgfood.jpg')",
+          backgroundImage: "url('http://localhost:3001/contact.jpg')",
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",

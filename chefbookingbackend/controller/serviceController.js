@@ -4,6 +4,6 @@ exports.getService = async (req, res, next) => {
     const services = await Service.find();
     res.status(201).json(services);
   } catch (err) {
-    console.log("erroe encounter");
+    console.log("error encounter" ,err);
   }
 };

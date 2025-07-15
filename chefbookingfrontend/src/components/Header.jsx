@@ -1,45 +1,47 @@
 import { Link, useNavigate } from "react-router-dom";
 import styles from "./Header.module.css";
 import { useContext, useState } from "react";
-import { authContext } from "../store/Logininfostore";
+import { authContext } from "../store/authStore";
+import { UserStore } from "../store/UserdataStore";
 
 const Header = () => {
-  const { loginstate ,handleuserProfile} = useContext(authContext);
+  const { user } = useContext(UserStore);
+  const { loginstate, handleuserProfile } = useContext(authContext);
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const handlesignout = (e) => {
     // e.preventDefault();
 
-    fetch("http://localhost:3001/logout",{
+    fetch("http://localhost:3001/logout", {
       method: "POST",
-      credentials: "include",})
-    .then(async(res)=>{
-      const data=await res.json();
-      if(!res.ok){
-        if(res.status===400){
-          alert("You are not logged in");
-          return ;
+      credentials: "include",
+    })
+      .then(async (res) => {
+        const data = await res.json();
+        if (!res.ok) {
+          if (res.status === 400) {
+            alert("You are not logged in");
+            return;
+          } else if (res.status === 500) {
+            alert("Internal server error. Please try again later.");
+            return;
+          }
+          throw new Error("Logout failed ");
         }
-        else if(res.status===500){
-          alert("Internal server error. Please try again later.");
-          return;
+        return data;
+      })
+      .then((data) => {
+        if (!data) return;
+        if (data.status === "success") {
+          handleuserProfile(false);
+          navigate("/");
+          alert("You have been logged out successfully");
         }
-        throw new Error("Logout failed ");
-      }
-      return data;
-    })
-    .then((data)=>{
-      if (!data) return;
-      if(data.status==="success"){
-        handleuserProfile(false);
-        navigate("/");
-        alert("You have been logged out successfully");
-      }
-    })
-    .catch((err)=>{
-      console.error("Logout error:", err);
-      alert("An error occurred while logging out. Please try again.");
-    })
+      })
+      .catch((err) => {
+        console.error("Logout error:", err);
+        alert("An error occurred while logging out. Please try again.");
+      });
   };
 
   return (
@@ -50,7 +52,7 @@ const Header = () => {
             <img
               width="50px"
               height="50px"
-              src="/assets/Chefwalelogo.png"
+              src="http://localhost:3001/Chefwalelogo.png"
               alt="ChefWale"
             />
           </Link>
@@ -115,7 +117,7 @@ const Header = () => {
                     aria-expanded="false"
                   >
                     <img
-                      src="https://github.com/mdo.png"
+                      src={`http://localhost:3001${user.image}`}
                       alt="mdo"
                       width="32"
                       height="32"
@@ -134,9 +136,14 @@ const Header = () => {
                       </Link>
                     </li>
                     <li>
+                      <Link className="dropdown-item" to="/yourbookinghistory">
+                        Booking History
+                      </Link>
+                    </li>
+                    <li>
                       <button
                         className="dropdown-item"
-                        onClick={() => navigate("/")}
+                        onClick={(e) => {handlesignout(e);}}
                       >
                         Sign out
                       </button>
@@ -173,7 +180,7 @@ const Header = () => {
                     aria-expanded="false"
                   >
                     <img
-                      src="https://github.com/mdo.png"
+                      src={`http://localhost:3001${user.image}`}
                       alt="mdo"
                       width="32"
                       height="32"
@@ -189,6 +196,11 @@ const Header = () => {
                     <li>
                       <Link className="dropdown-item" to="/yourbooking">
                         Your Booking
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="dropdown-item" to="/yourbookinghistory">
+                        Booking History
                       </Link>
                     </li>
                     <li>

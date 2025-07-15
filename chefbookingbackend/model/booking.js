@@ -11,11 +11,11 @@ const BookingSchema = new mongoose.Schema({
     required: true,
   },
   date: {
-    type: Date,
+    type:String,
     required: true,
   },
   time: {
-    type: String, //e.g., "6PM–7PM"
+    type: Number, //e.g., 6
     required: true,
   },
   totalPrice: Number,
@@ -31,5 +31,9 @@ const BookingSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  modeOfPayment:{
+    type:String,
+    required:true,
+  }
 });
 module.exports = mongoose.model("Booking", BookingSchema);

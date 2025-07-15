@@ -9,7 +9,6 @@ const Service = () => {
     <>
       <h2>Our Services</h2>
       <p>Simply browse through our extensive list of trusted chef</p>
-      <div className="container">
         <div className="row">
           {ser.map((service, idx) => (
             <div className="col-12 col-sm-6 col-md-4 col-lg-3 mb-4" key={idx}>
@@ -17,7 +16,6 @@ const Service = () => {
             </div>
           ))}
         </div>
-      </div>
     </>
   );
 };

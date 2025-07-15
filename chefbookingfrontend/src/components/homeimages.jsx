@@ -5,7 +5,7 @@ function HomeImages() {
   return (
     <div
       style={{ position: "relative", borderRadius: "16px", overflow: "hidden" }}
-      class={styles["imagecontainer"]}
+      className={styles["imagecontainer"]}
     >
       {/* Fixed Caption */}
       <div
@@ -36,7 +36,7 @@ function HomeImages() {
           <img
             className="d-block w-100"
             style={{ height: "500px", objectFit: "cover" }}
-            src="/assets/PIC2.png"
+            src="http://localhost:3001/PIC2.png"
             alt=""
           />
         </Carousel.Item>
@@ -44,7 +44,7 @@ function HomeImages() {
           <img
             className="d-block w-100"
             style={{ height: "500px", objectFit: "cover" }}
-            src="/assets/PIC1.jpg"
+            src="http://localhost:3001/PIC1.jpg"
             alt=""
           />
         </Carousel.Item>
@@ -52,7 +52,7 @@ function HomeImages() {
           <img
             className="d-block w-100"
             style={{ height: "500px", objectFit: "cover" }}
-            src="/assets/PIC3.jpg"
+            src="http://localhost:3001/PIC3.jpg"
             alt=""
           />
         </Carousel.Item>

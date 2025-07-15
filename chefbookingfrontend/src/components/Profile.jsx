@@ -1,42 +1,91 @@
 import styles from "./Profile.module.css";
-import { useNavigate } from "react-router-dom";
-import { useState, useRef } from "react";
+import { useNavigate ,Navigate,useLocation} from "react-router-dom";
+import { useState, useRef, useContext, useEffect } from "react";
+import { UserStore } from "../store/UserdataStore";
+import { authContext } from "../store/authStore";
 
 const Profile = () => {
-  // Dummy user data (replace with real data or props/context)
-  const user = {
-    image: "/assets/user.png",
-    name: "John Doe",
-    address: "123 Main Street, Mumbai, India",
-    phone: "+91 9876543210",
-    email: "john.doe@example.com",
-    userId: "user12345",
-    gender: "Male",
-    birthday: "1990-05-15",
-  };
-
+  const { user, handleUpdate } = useContext(UserStore);
+  const {loginstate}=useContext(authContext);
+   const location = useLocation();
   const navigate = useNavigate();
   const [showUploadPopup, setShowUploadPopup] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
   const fileInputRef = useRef(null);
-  const [previewImg, setPreviewImg] = useState(user.image);
+  const [previewImg, setPreviewImg] = useState(
+    `http://localhost:3001${user.image}`
+  );
+  useEffect(() => {
+    setPreviewImg(`http://localhost:3001${user.image}`);
+  }, [user.image]);
 
   const handleUpload = () => {
+    if (selectedFile) {
+      const formData = new FormData();
+      formData.append("image", selectedFile);
+      fetch("http://localhost:3001/updateUserProfilePic", {
+        method: "POST",
+        body: formData,
+        credentials: "include",
+      })
+        .then(async (res) => {
+          const data = await res.json();
+          if (!res.ok) {
+            if (res.status == 401) {
+              alert(data.message);
+              handleuserProfile(data.isLoggedIn);
+              navigate("/login");
+              return;
+            } else if (res.status == 404) {
+              alert(data.message);
+              handleuserProfile(data.isLoggedIn);
+              navigate("/sign-up");
+              return;
+            } else if (res.status == 500) {
+              alert(data.message);
+              return;
+            }
+            throw new Error("adding data failed");
+          }
+          return data;
+        })
+        .then((data) => {
+          if (!data) return;
+          if (data.status === "success") {
+            handleUpdate({
+              ...user,
+              image:data.image,
+            })
+            alert("profile image updated");
+            setShowUploadPopup(false);
+          }
+        })
+        .catch((err) => {
+          console.error("Error during updating image:", err);
+          alert("An error occurred during uploading. Please try again.");
+        });
+    } else {
+      alert("please add file");
+      fileInputRef.current.focus();
+    }
+
     // You can access the file with fileInputRef.current.files[0]
-    console.log("uploaded");
-    setShowUploadPopup(false);
+    // console.log("uploaded");
+    // setShowUploadPopup(false);
     // Optionally update the main profile image here if you want
     // setUser({ ...user, image: previewImg });
   };
 
   const handleCancel = () => {
     setShowUploadPopup(false);
-    setPreviewImg(user.image); // Reset preview on cancel
+    setPreviewImg(`http://localhost:3001${user.image}`); // Reset preview on cancel
   };
 
   // Handle file input change to preview image
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      setSelectedFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreviewImg(reader.result);
@@ -44,15 +93,19 @@ const Profile = () => {
       reader.readAsDataURL(file);
     }
   };
-
+  if(!loginstate){
+    return <Navigate to="/login" replace   state={{ from: location }}/>
+  }
   return (
     <div className={`container py-5 ${styles.profileContainer}`}>
       <div className="row justify-content-center ">
         <div className="col-12 col-md-8 col-lg-6 ">
-          <div className={`card shadow-sm p-4  rounded-5 ${styles.profileCard}`}>
+          <div
+            className={`card shadow-sm p-4  rounded-5 ${styles.profileCard}`}
+          >
             <div className="d-flex flex-column align-items-center">
               <img
-                src={user.image}
+                src={`http://localhost:3001${user.image}`}
                 alt={user.name}
                 className={`rounded-circle mb-3 ${styles.profileImage}`}
                 style={{ width: "120px", height: "120px", objectFit: "cover" }}
@@ -89,10 +142,13 @@ const Profile = () => {
                     <strong>Email:</strong> {user.email}
                   </p>
                   <p>
-                    <strong>Phone:</strong> {user.phone}
+                    <strong>Phone:</strong> {user.number}
                   </p>
                   <p>
                     <strong>Address:</strong> {user.address}
+                  </p>
+                  <p>
+                    <strong>Status:</strong> {user.status?"Active":"Blocked"}
                   </p>
                 </div>
                 <div
@@ -114,7 +170,7 @@ const Profile = () => {
                     Basic Info :
                   </p>
                   <p>
-                    <strong>Birthday:</strong> {user.birthday}
+                    <strong>Birthday:</strong> {user.birthdate}
                   </p>
                   <p>
                     <strong>Gender:</strong> {user.gender}

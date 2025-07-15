@@ -1,6 +1,5 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import "./index.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -16,6 +15,8 @@ import Profile from "./components/Profile.jsx";
 import Yourbooking from "./components/yourbooking.jsx";
 import ProfileDetailAdd from "./components/ProfileDetailAdd.jsx";
 import ProfileDetailUpdate from "./components/ProfileDetailUpdate.jsx";
+import PreBooking from "./components/PreBooking.jsx";
+import BookingHistory from "./components/BookingHistory.jsx";
 
 const router = createBrowserRouter([
   {
@@ -33,6 +34,11 @@ const router = createBrowserRouter([
       { path: "/yourbooking", element: <Yourbooking /> },
       { path: "/profiledetailAdd", element: <ProfileDetailAdd /> },
       { path: "/profiledetailUpdate", element: <ProfileDetailUpdate /> },
+      { path: "/bookingDetail/:chefid", element: <PreBooking /> },
+      {
+        path: "/yourbookinghistory",
+        element: <BookingHistory/>,
+      },
     ],
   },
 ]);

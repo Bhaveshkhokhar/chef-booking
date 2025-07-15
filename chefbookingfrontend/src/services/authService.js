@@ -9,7 +9,7 @@ export const checkAuthStatus = async (signal) => {
       if (response.status === 401) {
         return { isLoggedIn: false };
       }
-      if( response.status === 404) {
+      if (response.status === 404) {
         return { isLoggedIn: false };
       }
       if (response.status === 500) {

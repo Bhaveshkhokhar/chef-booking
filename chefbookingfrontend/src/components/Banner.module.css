@@ -3,7 +3,6 @@
   justify-content: space-between;
   align-items: center;
   background-color:#C4A484; /* fallback if no image */
-  background-image: url('/assets/banner-background.jpg'); /* optional background */
   background-size: cover;
   background-position: center;
   padding: 40px;

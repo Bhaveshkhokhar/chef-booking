@@ -8,7 +8,7 @@ const Servicecard = ({ service }) => {
           class="card"
           style={{ width: "230px", margin: "0px", background: "#C4A484" }}
         >
-          <img src={service.pic} class="card-img-top" alt={service.type} />
+          <img src={`http://localhost:3001${service.pic}`} class="card-img-top" alt={service.type} />
           <div class="card-body">
             <h5 class="card-title">{service.type}</h5>
             <p class="card-text">{service.description}</p>

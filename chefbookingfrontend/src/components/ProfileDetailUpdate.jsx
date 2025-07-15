@@ -1,36 +1,106 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useContext } from "react";
 import styles from "./ProfileDetailUpdate.module.css";
 import {
   FaUser,
-  FaUserTag,
   FaEnvelope,
-  FaPhone,
   FaHome,
   FaTransgender,
   FaBirthdayCake,
 } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
-const initialUser = {
-  image: "/assets/user.png",
-  name: "John Doe",
-  address: "123 Main Street, Mumbai, India",
-  phone: "+91 9876543210",
-  email: "john.doe@example.com",
-  userId: "user12345",
-  gender: "Male",
-  birthday: "1990-05-15",
-};
+import { useNavigate, Navigate,useLocation } from "react-router-dom";
+import { authContext } from "../store/authStore";
+import { UserStore } from "../store/UserdataStore";
 
 const ProfileDetailUpdate = () => {
-  const [user, setUser] = useState(initialUser);
-  const fileInputRef = useRef(null);
+  const { loginstate,handleuserProfile } = useContext(authContext);
+  const { user, handleUpdate } = useContext(UserStore);
   const navigate = useNavigate();
+  const location=useLocation();
+  const Name = useRef();
+  const Email = useRef();
+  const Address = useRef();
+  const Birthdate = useRef();
+  const Gender = useRef();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert("Profile updated!");
+    const isName = /^[a-zA-Z\s]+$/.test(Name.current.value.trim());
+    if (!isName || Name.current.value.trim() === "") {
+      alert("please enter a valid name");
+      Name.current.focus();
+      return;
+    }
+    fetch("http://localhost:3001/updateUserData", {
+      method: "POST",
+      body: JSON.stringify({
+        Name: Name.current.value,
+        Email: Email.current.value,
+        Gender: Gender.current.value,
+        Address: Address.current.value,
+        Birthdate: Birthdate.current.value,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    })
+      .then(async (res) => {
+        const data = await res.json();
+        if (!res.ok) {
+          if (res.status === 422) {
+            alert(data.message);
+            if (data.field === "Name") {
+              Name.current.focus();
+            } else if (data.field === "Email") {
+              Email.current.focus();
+            } else if (data.field === "Gender") {
+              Gender.current.focus();
+            } else {
+              Birthdate.current.focus();
+            }
+            return;
+          } else if (res.status == 401) {
+            alert(data.message);
+            handleuserProfile(data.isLoggedIn);
+            navigate("/login");
+            return;
+          } else if (res.status == 404) {
+            alert(data.message);
+            handleuserProfile(data.isLoggedIn);
+            navigate("/sign-up");
+            return;
+          } else if (res.status == 500) {
+            alert(data.message);
+            return;
+          }
+          throw new Error("updating data failed");
+        }
+        return data;
+      })
+      .then((data) => {
+        if (!data) return;
+        if (data.status === "success") {
+          handleUpdate({
+            name:Name.current.value,
+            email:Email.current.value,
+            birthdate:Birthdate.current.value,
+            gender:Gender.current.value,
+            address:Address.current.value,
+            number:user.number,
+            image:user.image,
+          });
+          alert("profile updated");
+          navigate("/profile");
+        }
+      })
+      .catch((err) => {
+        console.error("Error during updating profile:", err);
+        alert("An error occurred during uploading data, Please try again.");
+      });
   };
-
+  if(!loginstate){
+    return <Navigate to="/login" replace  state={{ from: location }}/>
+  }
   return (
     <div className="container py-5 ">
       <div className="row justify-content-center">
@@ -41,9 +111,6 @@ const ProfileDetailUpdate = () => {
             style={{ background: "#C4A484" }}
           >
             {/* ...rest of your form fields... */}
-
-            {/* ...rest of your form fields remain unchanged... */}
-            {/* (Keep all your other fields as before) */}
             <div className="mb-3">
               <label className="form-label">Name</label>
               <div className="input-group">
@@ -53,7 +120,8 @@ const ProfileDetailUpdate = () => {
                 <input
                   className="form-control"
                   name="name"
-                  value={user.name}
+                  defaultValue={user.name}
+                  ref={Name}
                   required
                 />
               </div>
@@ -67,8 +135,8 @@ const ProfileDetailUpdate = () => {
                 <input
                   className="form-control"
                   name="email"
-                  value={user.email}
-                  required
+                  ref={Email}
+                  defaultValue={user.email}
                   type="email"
                 />
               </div>
@@ -81,10 +149,11 @@ const ProfileDetailUpdate = () => {
                   <FaHome />
                 </span>
                 <input
+                  type="text"
                   className="form-control"
                   name="address"
-                  value={user.address}
-                  required
+                  ref={Address}
+                  defaultValue={user.address}
                 />
               </div>
             </div>
@@ -97,8 +166,8 @@ const ProfileDetailUpdate = () => {
                 <select
                   className="form-select"
                   name="gender"
-                  value={user.gender}
-                  required
+                  ref={Gender}
+                  defaultValue={user.gender}
                 >
                   <option>Male</option>
                   <option>Female</option>
@@ -115,9 +184,9 @@ const ProfileDetailUpdate = () => {
                 <input
                   className="form-control"
                   name="birthday"
-                  value={user.birthday}
                   type="date"
-                  required
+                  defaultValue={user.birthdate}
+                  ref={Birthdate}
                 />
               </div>
             </div>
@@ -126,6 +195,16 @@ const ProfileDetailUpdate = () => {
               <button type="submit" className={`${styles["Button"]}  mb-3`}>
                 Update Profile
               </button>
+              <button
+                type="button"
+                onClick={() => {
+                  navigate("/profile");
+                }}
+                className={`${styles["Button"]}  mb-3`}
+                style={{ marginLeft: "10px" }}
+              >
+                Update later
+              </button>
             </div>
           </form>
         </div>
@@ -133,4 +212,5 @@ const ProfileDetailUpdate = () => {
     </div>
   );
 };
+
 export default ProfileDetailUpdate;

@@ -12,3 +12,8 @@
   user-select: none;
   /* remove cursor: grab to improve touchpad responsiveness */
 }
+/* In your CSS Module (e.g., TimeSelector.module.css) */
+.Buttoncolor {
+  background-color: orange;
+  color: white; /* Optional */
+}

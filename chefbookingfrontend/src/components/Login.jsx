@@ -1,15 +1,14 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import styles from "./Login.module.css";
-import { useContext, useRef } from "react";
-import { authContext } from "../store/Logininfostore";
-import { FaUser, FaLock } from "react-icons/fa";
-
-
+import { useContext, useRef, useEffect } from "react";
+import { authContext } from "../store/authStore";
 const Login = () => {
-  const { handleuserProfile } = useContext(authContext);
+  const { handleuserProfile, loginstate } = useContext(authContext);
+  const rememberMe = useRef();
   const Number = useRef();
   const Password = useRef();
   const navigate = useNavigate();
+  const location = useLocation();
   const handlelogin = (event) => {
     // validate  number
     event.preventDefault();
@@ -30,12 +29,13 @@ const Login = () => {
       body: JSON.stringify({
         Number: Number.current.value,
         Password: Password.current.value,
+        rememberMe: rememberMe.current.checked,
       }),
       credentials: "include", // ✅ Send cookies with request
     })
       .then(async (res) => {
         const data = await res.json();
-        
+
         if (!res.ok) {
           // Handle known status codes
           if (res.status === 401) {
@@ -75,15 +75,21 @@ const Login = () => {
         alert("An error occurred during login. Please try again.");
       });
   };
+   useEffect(() => {
+    if (loginstate) {
+      // Get the intended path, fallback to home
+      const from = location.state?.from?.pathname || "/";
+      navigate(from, { replace: true });
+    }
+  }, [loginstate, navigate, location]);
+
   return (
     <>
-    
       <div
         className="modal modal-sheet position-static d-block  p-4 py-md-5"
         tabIndex={-1}
         role="dialog"
         id="modalSignin"
-         
       >
         {" "}
         <div className="modal-dialog">
@@ -94,12 +100,11 @@ const Login = () => {
           >
             <div className="w-100 d-flex justify-content-center mt-4 mb-0 ">
               <img
-                src="/assets/Chefwalelogo.png"
+                src="http://localhost:3001/Chefwalelogo.png"
                 alt="ChefWale Logo"
                 style={{ width: "90px", height: "90px", objectFit: "contain" }}
               />
-            </div>
-            {" "}
+            </div>{" "}
             <div className="modal-header p-2 pb-4 border-bottom-0  justify-content-center mt-0">
               {" "}
               <h1 className="fw-bold mb-0 fs-2">Login</h1>{" "}
@@ -116,7 +121,9 @@ const Login = () => {
                 <div className="form-floating mb-3  ">
                   {" "}
                   <div className="text-center">
-                  <small className=" mb-3 ">Please Log in to booking now</small>{" "}
+                    <small className=" mb-3 ">
+                      Please Log in to booking now
+                    </small>{" "}
                   </div>
                 </div>{" "}
                 <div className="form-floating mb-3">
@@ -127,6 +134,7 @@ const Login = () => {
                     className="form-control rounded-3"
                     id="floatingInput"
                     placeholder="mobile number"
+                    required
                   />{" "}
                   <label htmlFor="floatingInput">Mobile number</label>{" "}
                 </div>{" "}
@@ -146,7 +154,7 @@ const Login = () => {
                   <input
                     className="form-check-input"
                     type="checkbox"
-                    value="remember-me"
+                    ref={rememberMe}
                     id="checkDefault"
                   />{" "}
                   <label className="form-check-label" htmlFor="checkDefault">
@@ -165,7 +173,7 @@ const Login = () => {
                   <Link
                     to="/sign-up"
                     className="text-primary underline cursor-pointer"
-                    style={{color:"c4a484"}}
+                    style={{ color: "c4a484" }}
                   >
                     Sign up here
                   </Link>

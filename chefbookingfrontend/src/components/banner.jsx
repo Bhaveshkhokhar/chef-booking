@@ -1,9 +1,11 @@
 import { useContext, useEffect, useState } from "react";
 import styles from "./banner.module.css";
-import { authContext } from "../store/Logininfostore";
+import { authContext } from "../store/authStore";
+import { ChefsStore } from "../store/ChefdataStore";
 import { useNavigate } from "react-router-dom";
 
 const Banner = () => {
+  const{chefs}=useContext(ChefsStore);
   const { loginstate } = useContext(authContext);
   const navigate = useNavigate();
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 900);
@@ -20,7 +22,7 @@ const Banner = () => {
         <div className={styles.bannerContent}>
           <h2> Booking Now</h2>
           <br />
-          <h2 style={{ margin: "0px 0px 10px 0px" }}>With 50+ Trusted Chef</h2>
+          <h2 style={{ margin: "0px 0px 10px 0px" }}>With {chefs.length}+ Trusted Chef</h2>
           <button
             className={styles.bannerButton}
             onClick={() => {
@@ -34,7 +36,7 @@ const Banner = () => {
           <img
             width="700px"
             height="700px"
-            src={isMobile ? "/assets/PIC1.jpg" : "/assets/chefpic.png"}
+            src={isMobile ? "http://localhost:3001/banner1.png" : "http://localhost:3001/banner2.png"}
             alt="Chef"
           />
         </div>

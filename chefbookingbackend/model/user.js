@@ -18,6 +18,7 @@ const UserSchema = new mongoose.Schema({
     type: String,
     lowercase: true,
     trim: true,
+    default:""
   },
   mobile: {
     type: String,
@@ -30,7 +31,7 @@ const UserSchema = new mongoose.Schema({
   },
   profileImage: {
     type: String, // URL or file path
-    default: "",
+    default: "/defaultpic.jpg",
   },
   birthday: {
     type: Date,
@@ -43,6 +44,10 @@ const UserSchema = new mongoose.Schema({
     type:String,
     enum:["Male","Female","Other"],
     default:"Male",
+  },
+  status:{
+    type:Boolean,
+    default:true,
   }
 });
 module.exports = mongoose.model("User", UserSchema);

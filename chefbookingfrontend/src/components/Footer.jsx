@@ -1,4 +1,5 @@
 import styles from "./Footer.module.css";
+import { Link } from "react-router-dom";
 const Footer = () => {
   return (
     <>
@@ -16,7 +17,7 @@ const Footer = () => {
                     <img
                       width="150px"
                       height="150px"
-                      src="/assets/Chefwalelogo.png"
+                      src="http://localhost:3001/Chefwalelogo.png"
                       alt="ChefWale"
                     />
                   </a>
@@ -30,24 +31,24 @@ const Footer = () => {
                   <h5>SECTION</h5>
                   <ul className="nav flex-column">
                     <li className="nav-item mb-2">
-                      <a href="#" className="nav-link p-0 text-body-secondary">
+                      <Link to="/" className="nav-link p-0 text-body-secondary">
                         Home
-                      </a>
+                      </Link>
                     </li>
                     <li className="nav-item mb-2">
-                      <a href="#" className="nav-link p-0 text-body-secondary">
+                      <Link to="chefs/All Chefs" className="nav-link p-0 text-body-secondary">
                         All Chefs
-                      </a>
+                      </Link>
                     </li>
                     <li className="nav-item mb-2">
-                      <a href="#" className="nav-link p-0 text-body-secondary">
+                      <Link to="/contact" className="nav-link p-0 text-body-secondary">
                         Contact
-                      </a>
+                      </Link>
                     </li>
                     <li className="nav-item mb-2">
-                      <a href="#" className="nav-link p-0 text-body-secondary">
+                      <Link to="/about-us" className="nav-link p-0 text-body-secondary">
                         About Us
-                      </a>
+                      </Link>
                     </li>
                   </ul>
                 </div>
@@ -65,35 +66,6 @@ const Footer = () => {
 
             <div className="d-flex flex-column flex-sm-row justify-content-center align-items-center py-4 my-4 border-top gap-3">
               <p className="mb-0">© 2025 Company, Inc. All rights reserved.</p>
-              <ul className="list-unstyled d-flex mb-0">
-                <li className="ms-3">
-                  <a
-                    className="link-body-emphasis"
-                    href="#"
-                    aria-label="Instagram"
-                  >
-                    <svg className="bi" width="24" height="24">
-                      <use xlinkHref="#instagram"></use>
-                    </svg>
-                  </a>
-                </li>
-                <li className="ms-3">
-                  <a
-                    className="link-body-emphasis"
-                    href="#"
-                    aria-label="Facebook"
-                  >
-                    <svg
-                      className="bi"
-                      width="24"
-                      height="24"
-                      aria-hidden="true"
-                    >
-                      <use xlinkHref="#facebook"></use>
-                    </svg>
-                  </a>
-                </li>
-              </ul>
             </div>
           </footer>
         </div>
