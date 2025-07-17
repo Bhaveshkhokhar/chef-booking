@@ -192,16 +192,16 @@ const Signup = () => {
   return (
     <>
       <div
-        class="modal modal-sheet position-static d-block  p-4 py-md-5"
+        className="modal modal-sheet position-static d-block  p-4 py-md-5"
         tabindex="-1"
         role="dialog"
         id="modalSignin"
       >
         {" "}
-        <div class="modal-dialog">
+        <div className="modal-dialog">
           {" "}
           <div
-            class="modal-content rounded-5 shadow"
+            className="modal-content rounded-5 shadow"
             style={{ backgroundColor: "#C4A484", color: "white" }}
           >
             <div className="w-100 d-flex justify-content-center mt-4 mb-0 ">
@@ -211,31 +211,31 @@ const Signup = () => {
                 style={{ width: "90px", height: "90px", objectFit: "contain" }}
               />
             </div>{" "}
-            <div class="modal-header p-2 pb-4 border-bottom-0 justify-content-center">
+            <div className="modal-header p-2 pb-4 border-bottom-0 justify-content-center">
               {" "}
-              <h1 class="fw-bold mb-0 fs-2">Sign up</h1>{" "}
+              <h1 className="fw-bold mb-0 fs-2">Sign up</h1>{" "}
             </div>{" "}
-            <div class="modal-body p-5 pt-0">
+            <div className="modal-body p-5 pt-0">
               {" "}
               <form
-                class=""
+                className=""
                 onSubmit={(event) => {
                   handleotpverification(event);
                 }}
               >
                 {" "}
-                <div class="form-floating mb-3 text-center">
+                <div className="form-floating mb-3 text-center">
                   {" "}
-                  <small class=" mb-3">
+                  <small className=" mb-3">
                     Please Sign up to booking now
                   </small>{" "}
                 </div>{" "}
-                <div class="form-floating mb-3">
+                <div className="form-floating mb-3">
                   {" "}
                   <input
                     ref={Name}
                     type="text"
-                    class="form-control rounded-3"
+                    className="form-control rounded-3"
                     id="name"
                     placeholder="name"
                     disabled={otpflag}
@@ -243,14 +243,14 @@ const Signup = () => {
                   />{" "}
                   <label for="name">name</label>{" "}
                 </div>{" "}
-                <div class="form-floating mb-3">
+                <div className="form-floating mb-3">
                   {" "}
                   <input
                     ref={Number}
                     maxLength={10}
                     minLength={10}
                     type="text"
-                    class="form-control rounded-3"
+                    className="form-control rounded-3"
                     id="floatingInput"
                     placeholder="mobile number"
                     disabled={otpflag}
@@ -258,12 +258,12 @@ const Signup = () => {
                   />{" "}
                   <label for="floatingInput">Mobile number</label>{" "}
                 </div>{" "}
-                <div class="form-floating mb-3">
+                <div className="form-floating mb-3">
                   {" "}
                   <input
                     ref={Password}
                     type="password"
-                    class="form-control rounded-3"
+                    className="form-control rounded-3"
                     id="floatingPassword"
                     placeholder="Password"
                     disabled={otpflag}
@@ -271,12 +271,12 @@ const Signup = () => {
                   />{" "}
                   <label for="floatingPassword">Create new Password</label>{" "}
                 </div>{" "}
-                <div class="form-floating mb-3">
+                <div className="form-floating mb-3">
                   {" "}
                   <input
                     ref={ConfirmPassword}
                     type="password"
-                    class="form-control rounded-3"
+                    className="form-control rounded-3"
                     id="confirmPassword"
                     placeholder="confirmPassword"
                     disabled={otpflag}
@@ -285,7 +285,7 @@ const Signup = () => {
                   <label for="confirmPassword">Confirm new Password</label>{" "}
                 </div>{" "}
                 <button
-                  class={`${styles["signup-pop-button"]} w-100 mb-2 btn btn-lg rounded-3`}
+                  className={`${styles["signup-pop-button"]} w-100 mb-2 btn btn-lg rounded-3`}
                   type="submit"
                   style={{ backgroundColor: "white", color: "#2c0600" }}
                   disabled={otpflag}
@@ -296,39 +296,39 @@ const Signup = () => {
                   Already have an account?{" "}
                   <Link
                     to="/login"
-                    class="text-primary underline cursor-pointer"
+                    className="text-primary underline cursor-pointer"
                   >
                     Login here
                   </Link>
                 </p>
                 {otpflag && (
                   <>
-                    <div class="form-floating mb-3">
+                    <div className="form-floating mb-3">
                       {" "}
                       <input
                         ref={otp}
                         type="text"
-                        class="form-control rounded-3"
+                        className="form-control rounded-3"
                         id="otp"
                         placeholder="Enter otp here"
                         required
                       />{" "}
                       <label for="otp">Enter otp here</label>{" "}
                     </div>
-                    <div class="form-check text-start my-3">
+                    <div className="form-check text-start my-3">
                       {" "}
                       <input
-                        class="form-check-input"
+                        className="form-check-input"
                         type="checkbox"
                         id="checkDefault"
                         ref={rememberMe}
                       />{" "}
-                      <label class="form-check-label" for="checkDefault">
+                      <label className="form-check-label" for="checkDefault">
                         Remember me
                       </label>{" "}
                     </div>
                     <button
-                      class={`${styles["signup-pop-button"]} w-100 mb-2 btn btn-lg rounded-3`}
+                      className={`${styles["signup-pop-button"]} w-100 mb-2 btn btn-lg rounded-3`}
                       type="submit"
                       style={{ backgroundColor: "white", color: "#2c0600" }}
                     >

@@ -19,13 +19,16 @@ const BookingContextProvider = ({ children }) => {
     setBooking(bookingdata);
   };
 
-  const updateBooking = (id, action) => {
+  const updateBooking = (id, action, date, time,bookedAt) => {
     fetch("http://localhost:3001/chefbookingupdate", {
       credentials: "include",
       method: "POST",
       body: JSON.stringify({
         id,
         action,
+        date,
+        time,
+        bookedAt
       }),
       headers: {
         "Content-Type": "application/json",
@@ -40,14 +43,30 @@ const BookingContextProvider = ({ children }) => {
             return;
           }
           if (res.status === 404) {
-            const book=bookings.filter(booking=>{
-              return booking.id!==id;
-            })
+            const book = bookings.filter((booking) => {
+              return booking.id !== id;
+            });
             setBooking(book);
             return;
           }
+          if (res.status === 400) {
+            const historydata = bookings.find((booking) => booking.id === id);
+            const book = bookings.filter((booking) => {
+              return booking.id !== id;
+            });
+            setBooking(book);
+            handlechange({
+              name: historydata.user.name,
+              date: historydata.date,
+              time: historydata.time,
+              fees: historydata.price,
+              modeOfPayment: historydata.modeOfPayment,
+              status: data.status,
+            });
+            return;
+          }
           if (res.status === 500) {
-            return ;
+            return;
           }
           throw new Error("Failed to update status");
         }
@@ -58,7 +77,7 @@ const BookingContextProvider = ({ children }) => {
         if (data.status === "success") {
           const historydata = bookings.find((booking) => booking.id === id);
           const book = bookings.filter((booking) => {
-             return booking.id !== id;
+            return booking.id !== id;
           });
           handlechange({
             name: historydata.user.name,

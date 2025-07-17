@@ -64,7 +64,7 @@ const Booking = () => {
                           color: "red",
                         }}
                         onClick={() => {
-                          cancelBooking(booking.id);
+                          cancelBooking(booking.id,booking.date,booking.time,booking.chef._id,booking.bookedAt);
                         }}
                       >
                         <ImCancelCircle />

@@ -3,7 +3,7 @@ const Container = ({ children }) => {
   return (
     <>
       <center>
-        <div class={`${styles["container"]}`}>{children}</div>
+        <div className={`${styles["container"]}`}>{children}</div>
       </center>
     </>
   );

@@ -9,11 +9,11 @@ const Chefcard = ({ chef }) => {
     <>
       <Link
         to={`/chef/${chef.id}`}
-        class={`btn ${styles["button"]}`}
+        className={`btn ${styles["button"]}`}
         style={{ padding: "0px" }}
       >
         <div
-          class="card"
+          className="card"
           style={{
             width: "200px",
             height: "350px",
@@ -26,12 +26,12 @@ const Chefcard = ({ chef }) => {
             maxHeight:"140px"
           }}
             src={`http://localhost:3001${chef.pic}`}
-            class="card-img-top"
+            className="card-img-top"
             alt={chef.name}
           />
-          <div class="card-body" style={{ textAlign: "left" }}>
-            <h6 class="card-title">{chef.name}</h6>
-            <p class="card-text">
+          <div className="card-body" style={{ textAlign: "left" }}>
+            <h6 className="card-title">{chef.name}</h6>
+            <div className="card-text">
               <p style={{ margin: "2px" }}>speciality: {chef.speciality}</p>
               <p style={{ margin: "2px" }}>service: {chef.type}</p>
               <p style={{ margin: "2px" }}>
@@ -41,10 +41,10 @@ const Chefcard = ({ chef }) => {
                 {"☆".repeat(emptyStars)}
                 <span className="text-muted small"> {chef.rating}</span>
               </p>
-              <li class={`${chef.available ? styles["green"] : styles["red"]}`}>
+              <li className={`${chef.available ? styles["green"] : styles["red"]}`}>
                 {chef.available ? "available" : "not available"}
               </li>
-            </p>
+            </div>
           </div>
         </div>
       </Link>

@@ -29,14 +29,20 @@ exports.chefBookingUpdate=async(req,res,next)=>{
         message: "Chef is not authenticated please login",
       });
     }
-
+    const chef=await Chef.findOne({mobile:decoded.Number});
     const booking = await Booking.findByIdAndDelete({
       _id: req.body.id,
     });
     if (!booking) {
-      return res
+      const bookinghist =await BookingHistory.findOne({date:req.body.date,time:req.body.time,chef_id:chef._id, bookedAt:req.body.bookedAt});
+      if(!bookinghist) {
+         return res
         .status(404)
-        .json({ message: "Booking not found", id: req.body.id });
+        .json({ message: "Booking not found", id: req.body.id, });
+      }
+      return res
+        .status(400)
+        .json({ message: `Booking already ${bookinghist.status}`, id: req.body.id, status:bookinghist.status });
     }
     const bookinghistory = new BookingHistory({
       chef_id: booking.chef_id,
@@ -96,6 +102,7 @@ exports.getChefBookings= async (req, res, next) => {
     );
     const data=bookings.map((booking)=>{
       return {
+        bookedAt:booking.bookedAt,
         id:booking._id,
         user:booking.user_id,
         date:booking.date,
@@ -151,9 +158,16 @@ exports.hostCancelBooking=async(req,res,next)=>{
       _id: new Mongoose.Types.ObjectId(req.body.id),
     });
     if (!booking) {
-      return res
+
+      const bookinghist =await BookingHistory.findOne({date:req.body.date,time:req.body.time,chef_id:req.body.chefid,bookedAt:req.body.bookedAt});
+      if(!bookinghist) {
+         return res
         .status(404)
-        .json({ message: "Booking not found" });
+        .json({ message: "Booking not found", id: req.body.id, });
+      }
+      return res
+        .status(400)
+        .json({ message: `Booking already ${bookinghist.status}`, id: req.body.id, status:bookinghist.status });
     }
     const bookinghistory = new BookingHistory({
       chef_id: booking.chef_id,
@@ -166,7 +180,7 @@ exports.hostCancelBooking=async(req,res,next)=>{
       bookedAt: booking.bookedAt,
       status: "cancelled",
     });
-    const confirmcancelled = await bookinghistory.save();
+    await bookinghistory.save();
     return res.status(201).json({
       status: "success",
     });
@@ -208,10 +222,12 @@ exports.getBooking = async (req, res, next) => {
       });
     }
     const bookings = await Booking.find().populate("user_id", "name profileImage").populate("chef_id", "name profileImage");;
-    const bookingHistory=await BookingHistory.find().populate("user_id", "name profileImage").populate("chef_id", "name profileImage");;
+    const bookingHistory=await BookingHistory.find().populate("user_id", "  name profileImage").populate("chef_id", " name profileImage");;
     const pendingbooking=bookings.map((booking)=>{
       return {
+        bookedAt:booking.bookedAt,
         id:booking._id,
+        time:booking.time,
         user:booking.user_id,
         chef:booking.chef_id,
         date:booking.date,
@@ -221,6 +237,7 @@ exports.getBooking = async (req, res, next) => {
     });
     const histbooking=bookingHistory.map((booking)=>{
       return{
+        bookedAt:booking.bookedAt,
         id:booking._id,
         user:booking.user_id,
         chef:booking.chef_id,
@@ -315,9 +332,15 @@ exports.cancelBooking = async (req, res, next) => {
       _id: new Mongoose.Types.ObjectId(req.body.id),
     });
     if (!booking) {
-      return res
-        .status(404)
-        .json({ message: "Booking not found", id: req.body.id });
+      const bookhist=await BookingHistory.findOne({date:req.body.date,time:req.body.time,chef_id:req.body.chefid,bookedAt:req.body.bookedAt}).populate("chef_id", "name profileImage _id type");
+      if(!bookhist){
+        return res
+          .status(404)
+          .json({ message: "Booking not found", id: req.body.id });
+      }
+      return  res
+        .status(400)
+        .json({ message: `Booking already ${bookhist.status}`, id: req.body.id, bookinghistdata:bookhist ,});
     }
     const bookinghistory = new BookingHistory({
       chef_id: booking.chef_id,

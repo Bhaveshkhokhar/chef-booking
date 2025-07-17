@@ -56,8 +56,8 @@ const Allchef = () => {
                     <span className="visually-hidden">unread messages</span>
                   </span>
                 </button>
-                {service.map((service) => (
-                  <button
+                {service.map((service,idx) => (
+                  <button key={idx}
                     className="list-group-item list-group-item-action "
                     style={
                       type === service.type
@@ -90,7 +90,7 @@ const Allchef = () => {
               </div>
             </div>
             <div className="col-9">
-              <Chefs type={type} chefs={chefs}></Chefs>
+              <Chefs type={type}  chefs={chefs}></Chefs>
             </div>
           </div>
         </div>

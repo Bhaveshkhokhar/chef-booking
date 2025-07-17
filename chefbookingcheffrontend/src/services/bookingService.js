@@ -20,7 +20,7 @@ const getTheChefBookings = async (signal,handleuserProfile) => {
       }
       throw new Error("Failed to fetch authentication status");
     }
-    
+    console.log(data);
     return mapServerbookingToLocalbooking(data.BookingData);
   } catch (err) {
     throw err;
@@ -29,6 +29,7 @@ const getTheChefBookings = async (signal,handleuserProfile) => {
 const mapServerbookingToLocalbooking = (bookings) => {
   return bookings.map((booking) => {
     return {
+      bookedAt:booking.bookedAt,
       id:booking.id,
       time:booking.time,
       date:booking.date,

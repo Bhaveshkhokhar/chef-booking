@@ -41,6 +41,7 @@ const token = req.cookies.chef_token;
     );
     const data=bookings.map((booking)=>{
       return{
+        bookedAt:booking.bookedAt,
         name:booking.user_id.name,
         date:booking.date,
         time:booking.time,

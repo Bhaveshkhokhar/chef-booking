@@ -4,7 +4,7 @@ const About = () => {
   return (
     <>
       <center>
-        <div class={`${styles["about"]}`}>
+        <div className={`${styles["about"]}`}>
           <Aboutcontent></Aboutcontent>
         </div>
       </center>

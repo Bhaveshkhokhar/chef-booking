@@ -22,7 +22,7 @@ export const getBookingData = async (signal, handleuserProfile) => {
       }
       throw new Error("Failed to fetch userBookingdata");
     }
-    console.log(data.userBookingData);
+    
     return mapServerBookingToLocalBooking(data.userBookingData);
   } catch (err) {
     if (err.name === "AbortError") {
@@ -42,16 +42,16 @@ export const mapServerBookingToLocalBooking = (serverBooking) => {
       price: booking.totalPrice,
       paid: booking.paid,
       address: booking.Address,
-      bookedAt: booking.bookedAt.slice(0, 10),
+      bookedAt: booking.bookedAt,
       modeOfPayment: booking.modeOfPayment,
     };
   });
 };
-export const cancelBooking = async (id, handleuserProfile, dispatch) => {
+export const cancelBooking = async (id,date,time,chefid,bookedAt ,handleuserProfile, dispatch,addCancelledBooking) => {
   try {
     const response = await fetch("http://localhost:3001/cancelBooking", {
       method: "POST",
-      body: JSON.stringify({ id }),
+      body: JSON.stringify({ id,date,time,chefid,bookedAt }),
       headers: {
         "Content-Type": "application/json",
       },
@@ -74,6 +74,30 @@ export const cancelBooking = async (id, handleuserProfile, dispatch) => {
         };
         dispatch(action);
         return;
+      }
+      if(response.status===400){
+        alert(data.message);
+        const action = {
+          type: "delete",
+          payload: {
+            id: data.id,
+          },
+        };
+        dispatch(action);
+        const localdata=mapServerBookingHistoryToLocalBookingHistory(data.bookinghistdata);
+        addCancelledBooking({
+        bookinghistory_id: localdata.bookinghistory_id,
+        chefDetail: localdata.chefDetail,
+        date: localdata.date,
+        time: localdata.time,
+        price: localdata.price,
+        address: localdata.address,
+        bookedAt: localdata.bookedAt,
+        modeOfPayment: localdata.modeOfPayment,
+        status: localdata.status,
+        });
+        return;
+
       }
       if (response.status === 500) {
         alert(data.message);

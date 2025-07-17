@@ -40,12 +40,15 @@ const BookingProvider = ({ children }) => {
     dispatch(action);
   };
 
-  const handleCancelBooking = (booking_id) => {
-    cancelBooking(booking_id, handleuserProfile,dispatch).then((data) => {
+  const handleCancelBooking = (booking_id,date,time,chefid,bookedAt) => {
+    cancelBooking(booking_id,date,time,chefid,bookedAt, handleuserProfile,dispatch,addCancelledBooking).then((data) => {
+      if(data){
       const action = {
         type: "delete",
         payload: {
           id: data.booking_id,
+          date,
+          time,chefid,bookedAt,
         },
       };
       dispatch(action);
@@ -59,7 +62,7 @@ const BookingProvider = ({ children }) => {
         bookedAt: data.bookedAt,
         modeOfPayment: data.modeOfPayment,
         status: data.status,
-      });
+      });}
     });
   };
 
@@ -72,7 +75,7 @@ const BookingProvider = ({ children }) => {
       price: booking.totalPrice,
       paid: booking.paid,
       address: booking.Address,
-      bookedAt: booking.bookedAt.slice(0, 10),
+      bookedAt: booking.bookedAt,
       modeOfPayment: booking.modeOfPayment,
     };
     const action = {

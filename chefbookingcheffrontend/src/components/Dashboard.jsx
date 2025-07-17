@@ -18,6 +18,7 @@ const Dashboard = () => {
   let data = [...bookinghistory];
   bookings.forEach((booking) => {
     data.push({
+      id:booking.id,
       name: booking.user.name,
       date: booking.date,
       time: booking.time,
@@ -88,7 +89,7 @@ const Dashboard = () => {
                               color: "red",
                             }}
                             onClick={() => {
-                              updateBooking(booking.id, "cancelled");
+                              updateBooking(booking.id, "cancelled",booking.date,booking.time,booking.bookedAt);
                             }}
                           >
                             <ImCancelCircle />
@@ -100,7 +101,7 @@ const Dashboard = () => {
                               color: "green",
                             }}
                             onClick={() => {
-                              updateBooking(booking.id, "Completed");
+                              updateBooking(booking.id, "Completed",booking.date,booking.time,booking.bookedAt);
                             }}
                           >
                             <SiTicktick />

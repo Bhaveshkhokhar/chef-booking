@@ -80,7 +80,7 @@ const Yourbooking = () => {
                     className={styles.Button}
                     type="button"
                     onClick={() => {
-                      handleCancelBooking(booking.booking_id);
+                      handleCancelBooking(booking.booking_id,booking.date,booking.time,booking.chefDetail._id,booking.bookedAt);
                     }}
                   >
                     Cancel booking

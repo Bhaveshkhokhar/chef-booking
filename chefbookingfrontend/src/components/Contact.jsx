@@ -87,69 +87,69 @@ const Contact = () => {
             Contact us
           </h1>
           <div
-            class="modal modal-sheet position-static d-block  p-4 py-md-5"
-            tabindex="-1"
+            className="modal modal-sheet position-static d-block  p-4 py-md-5"
+            tabIndex="-1"
             role="dialog"
             id="modalSignin"
           >
             {" "}
-            <div class="modal-dialog">
+            <div className="modal-dialog">
               {" "}
               <div
-                class="modal-content rounded-5 shadow"
+                className="modal-content rounded-5 shadow"
                 style={{ backgroundColor: "#C4A484", color: "white" }}
               >
                 {" "}
-                <div class="modal-header p-5 pb-4 border-bottom-0">
+                <div className="modal-header p-5 pb-4 border-bottom-0">
                   {" "}
-                  <h1 class="fw-bold mb-0 fs-2">
+                  <h1 className="fw-bold mb-0 fs-2">
                     Fill out the form or Call us at +919968133855
                   </h1>{" "}
                 </div>{" "}
-                <div class="modal-body p-5 pt-0">
+                <div className="modal-body p-5 pt-0">
                   {" "}
                   <form  onSubmit={(e)=>handlesubmit(e)}>
                     {" "}
-                    <div class="form-floating mb-3">
+                    <div className="form-floating mb-3">
                       {" "}
                       <input
                         type="text"
                         ref={name}
-                        class="form-control rounded-3"
+                        className="form-control rounded-3"
                         id="name"
                         placeholder="name"
                         required
                       />{" "}
-                      <label for="name">Name</label>{" "}
+                      <label htmlFor="name">Name</label>{" "}
                     </div>{" "}
-                    <div class="form-floating mb-3">
+                    <div className="form-floating mb-3">
                       {" "}
                       <input
                         type="mobile"
                         maxLength="10"
                         ref={mobile}
-                        class="form-control rounded-3"
+                        className="form-control rounded-3"
                         id="mobile"
                         placeholder="Mobile"
                         required
                       />{" "}
-                      <label for="mobile">Mobile</label>{" "}
+                      <label htmlFor="mobile">Mobile</label>{" "}
                     </div>{" "}
-                    <div class="form-floating mb-3">
+                    <div className="form-floating mb-3">
                       {" "}
                       <input
                         type="email"
                         ref={email}
-                        class="form-control rounded-3"
+                        className="form-control rounded-3"
                         id="floatingInput"
                         placeholder="name@example.com"
                         required
                       />{" "}
-                      <label for="floatingInput">Email address</label>{" "}
+                      <label htmlFor="floatingInput">Email address</label>{" "}
                     </div>{" "}
-                    <div class="form-floating mb-3">
+                    <div className="form-floating mb-3">
                       <select
-                        class="form-select rounded-3"
+                        className="form-select rounded-3"
                         id="city"
                         ref={city}
                         defaultValue=""
@@ -165,11 +165,11 @@ const Contact = () => {
                         <option value="Lucknow">Lucknow</option>
                         <option value="Pune">Pune</option>
                       </select>
-                      <label for="city">City</label>
+                      <label htmlFor="city">City</label>
                     </div>
-                    <div class="form-floating mb-3">
+                    <div className="form-floating mb-3">
                       <textarea
-                        class="form-control rounded-3"
+                        className="form-control rounded-3"
                         ref={message}
                         maxLength={500}
                         placeholder="Write your message here"
@@ -177,12 +177,12 @@ const Contact = () => {
                         style={{ height: "150px" }}
                         required
                       ></textarea>
-                      <label for="message">
+                      <label htmlFor="message">
                         Please write your message in detail.
                       </label>
                     </div>
                     <button
-                      class={`${styles["login-pop-button"]} w-100 mb-2 btn btn-lg rounded-3`}
+                      className={`${styles["login-pop-button"]} w-100 mb-2 btn btn-lg rounded-3`}
                       type="submit"
                       style={{ backgroundColor: "white", color: "#2c0600" }}
                     >

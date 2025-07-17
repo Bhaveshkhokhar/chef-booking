@@ -12,12 +12,16 @@ const BookingContextProvider = ({ children }) => {
     const bookingdata = [...data];
     setBooking(bookingdata);
   };
-  const cancelBooking = (id) => {
+  const cancelBooking = (id,date,time,chefid,bookedAt) => {
     fetch("http://localhost:3001/hostbookingcancel", {
       credentials: "include",
       method: "POST",
       body: JSON.stringify({
         id,
+        date,
+        time,
+        chefid,
+        bookedAt,
       }),
       headers: {
         "Content-Type": "application/json",
@@ -36,13 +40,26 @@ const BookingContextProvider = ({ children }) => {
               handleuserProfile(false);
             } else {
               const book = bookings.filter((booking) => {
-                return booking.id !== id
-                
+                 return booking.id !== id
               });
-              console.log(bookings);
               setBooking(book);
             }
             return;
+          }
+          if(res.status===400){
+            const book = bookings.map((booking) => {
+                 if(booking.id== id){
+                  return {
+                    ...booking,
+                    status:data.status,
+                  }
+                 }else{
+                  return booking
+                 }
+                
+              });
+              setBooking(book);
+              return;
           }
           if (res.status === 500) {
             return;

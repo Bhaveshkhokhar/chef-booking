@@ -55,7 +55,7 @@ const Booking = () => {
                           color: "red",
                         }}
                         onClick={() => {
-                          updateBooking(booking.id,"cancelled");
+                          updateBooking(booking.id,"cancelled",booking.date,booking.time,booking.bookedAt);
                         }}
                       >
                         <ImCancelCircle />
@@ -67,7 +67,7 @@ const Booking = () => {
                           color: "green",
                         }}
                         onClick={() => {
-                          updateBooking(booking.id,"Completed");
+                          updateBooking(booking.id,"Completed",booking.date,booking.time,booking.bookedAt);
                         }}
                       >
                         <SiTicktick />
