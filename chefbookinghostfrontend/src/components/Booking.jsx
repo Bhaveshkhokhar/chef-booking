@@ -8,7 +8,11 @@ const Booking = () => {
   if (bookings.length === 0) {
     return (
       <>
-        <h1>No Booking Till</h1>
+        <center>
+          <h2 style={{ color: "#3B6DCE", marginTop: "50px" }}>
+            <u>NO BOOKING TILL NOW</u>
+          </h2>
+        </center>
       </>
     );
   }
@@ -27,14 +31,14 @@ const Booking = () => {
               </tr>
             </thead>
             <tbody>
-              {data.map((booking,index) => (
+              {data.map((booking, index) => (
                 <tr key={index}>
                   <th scope="row">{booking.date}</th>
                   <td>
                     <img
                       width="30px"
                       height="30px"
-                      style={{borderRadius:"30px", marginRight:"2px"}}
+                      style={{ borderRadius: "30px", marginRight: "2px" }}
                       src={`http://localhost:3001${booking.user.profileImage}`}
                       alt="User"
                     ></img>
@@ -42,15 +46,15 @@ const Booking = () => {
                   </td>
                   <td>
                     <img
-                     width="30px"
+                      width="30px"
                       height="30px"
-                      style={{borderRadius:"30px", marginRight:"2px"}}
+                      style={{ borderRadius: "30px", marginRight: "2px" }}
                       src={`http://localhost:3001${booking.chef.profileImage}`}
                       alt="Chef"
                     ></img>
                     <span>{booking.chef.name}</span>
                   </td>
-                  <td>{booking.fees}</td>
+                  <td>₹{booking.fees}</td>
                   <td>
                     {booking.status === "pending" && (
                       <button
@@ -59,13 +63,19 @@ const Booking = () => {
                           background: "white",
                           color: "red",
                         }}
-                        onClick={() => {cancelBooking(booking.id)}}
+                        onClick={() => {
+                          cancelBooking(booking.id);
+                        }}
                       >
                         <ImCancelCircle />
                       </button>
                     )}
-                    {booking.status === "cancelled" && <span>Cancelled</span>}
-                    {booking.status === "Completed" && <span>Complete</span>}
+                    {booking.status === "cancelled" && (
+                      <span style={{ color: "red" }}>Cancelled</span>
+                    )}
+                    {booking.status === "Completed" && (
+                      <span style={{ color: "green" }}>Completed</span>
+                    )}
                   </td>
                 </tr>
               ))}

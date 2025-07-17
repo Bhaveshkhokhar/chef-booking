@@ -8,16 +8,10 @@ const Home = () => {
       <center>
         <h3>TIRED OF TAKEAWAY? </h3>
         <h3>GET FOOD PREPARED AT YOUR KITCHEN!</h3>
-      </center>
-      <Container>
         <HomeImages />
-      </Container>
-      <Container>
         <Service />
-      </Container>
-      <Container>
         <Banner />
-      </Container>
+      </center>
     </>
   );
 };

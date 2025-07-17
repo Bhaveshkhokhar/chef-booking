@@ -6,7 +6,7 @@ const Servicecard = ({ service }) => {
       <Link to={`/chefs/${service.type}`} class={`btn ${styles["button"]}`}>
         <div
           class="card"
-          style={{ width: "230px", margin: "0px", background: "#C4A484" }}
+          style={{ maxWidth: "230px", background: "#C4A484",  }}
         >
           <img src={`http://localhost:3001${service.pic}`} class="card-img-top" alt={service.type} />
           <div class="card-body">

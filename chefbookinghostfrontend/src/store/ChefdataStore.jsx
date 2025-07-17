@@ -5,26 +5,26 @@ import { authContext } from "./authStore";
 export const ChefsStore = createContext({
   chefs: [],
   changeAvailability: () => {},
-  addchef:()=>{}
+  addchef: () => {},
 });
 const ChefProvider = ({ children }) => {
-  const {handleuserProfile}=useContext(authContext);
+  const { handleuserProfile } = useContext(authContext);
   const [chefs, setchefs] = useState([]);
-  const addchef=(data)=>{
-    const updatechefs=[...chefs,data];
+  const addchef = (data) => {
+    const updatechefs = [...chefs, data];
     setchefs(updatechefs);
-  }
+  };
   const handelesetchefs = (chefs) => {
     let Chefs = [...chefs];
     setchefs(Chefs);
   };
-  const changeAvailability = (id,flag) => {
+  const changeAvailability = (id, flag) => {
     fetch("http://localhost:3001/hostchefchangeavailablity", {
       credentials: "include",
       method: "POST",
       body: JSON.stringify({
         id,
-        flag:!flag,
+        flag: !flag,
       }),
       headers: {
         "Content-Type": "application/json",
@@ -68,21 +68,32 @@ const ChefProvider = ({ children }) => {
       })
       .catch((err) => {
         console.error("Error during updating chef availability:", err);
-        alert("An error occurred during updating chef availability. Please try again.");
+        alert(
+          "An error occurred during updating chef availability. Please try again."
+        );
       });
   };
   useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
-    getTheChefs(signal).then((chefs) => {
-      handelesetchefs(chefs);
-    });
+    getTheChefs(signal)
+      .then((chefs) => {
+        handelesetchefs(chefs);
+      })
+      .catch((err) => {
+        if (err.name === "AbortError") {
+          console.log("Fetch aborted");
+        } else {
+          console.error("Auth check failed:", err.message);
+           handleuserProfile(false);
+        }
+      });
     return () => {
       controller.abort();
     };
   }, []);
   return (
-    <ChefsStore.Provider value={{ chefs, changeAvailability,addchef }}>
+    <ChefsStore.Provider value={{ chefs, changeAvailability, addchef }}>
       {children}
     </ChefsStore.Provider>
   );

@@ -6,7 +6,7 @@ import { authContext } from "../store/authStore";
 
 const Profile = () => {
   const { user, handleUpdate } = useContext(UserStore);
-  const {loginstate}=useContext(authContext);
+  const {loginstate,handleuserProfile}=useContext(authContext);
    const location = useLocation();
   const navigate = useNavigate();
   const [showUploadPopup, setShowUploadPopup] = useState(false);
@@ -99,7 +99,7 @@ const Profile = () => {
   return (
     <div className={`container py-5 ${styles.profileContainer}`}>
       <div className="row justify-content-center ">
-        <div className="col-12 col-md-8 col-lg-6 ">
+        <div className="col-12 col-md-10 col-lg-8 ">
           <div
             className={`card shadow-sm p-4  rounded-5 ${styles.profileCard}`}
           >

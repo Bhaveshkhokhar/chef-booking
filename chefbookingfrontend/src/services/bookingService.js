@@ -22,6 +22,7 @@ export const getBookingData = async (signal, handleuserProfile) => {
       }
       throw new Error("Failed to fetch userBookingdata");
     }
+    console.log(data.userBookingData);
     return mapServerBookingToLocalBooking(data.userBookingData);
   } catch (err) {
     if (err.name === "AbortError") {
@@ -46,7 +47,7 @@ export const mapServerBookingToLocalBooking = (serverBooking) => {
     };
   });
 };
-export const cancelBooking = async (id, handleuserProfile) => {
+export const cancelBooking = async (id, handleuserProfile, dispatch) => {
   try {
     const response = await fetch("http://localhost:3001/cancelBooking", {
       method: "POST",
@@ -65,7 +66,14 @@ export const cancelBooking = async (id, handleuserProfile) => {
       }
       if (response.status === 404) {
         alert(data.message);
-        return data.id;
+        const action = {
+          type: "delete",
+          payload: {
+            id: data.id,
+          },
+        };
+        dispatch(action);
+        return;
       }
       if (response.status === 500) {
         alert(data.message);
@@ -73,14 +81,20 @@ export const cancelBooking = async (id, handleuserProfile) => {
       }
       throw new Error("Failed to cancel Booking");
     }
-    return mapServerBookingHistoryToLocalBookingHistory(data.cancelledBooking,data.id);
+    return mapServerBookingHistoryToLocalBookingHistory(
+      data.cancelledBooking,
+      data.id
+    );
   } catch (err) {
     console.error("Fetch error:", err);
   }
 };
-const mapServerBookingHistoryToLocalBookingHistory = (serverBookingHistory,id) => {
+const mapServerBookingHistoryToLocalBookingHistory = (
+  serverBookingHistory,
+  id
+) => {
   return {
-    booking_id:id,
+    booking_id: id,
     bookinghistory_id: serverBookingHistory._id,
     chefDetail: serverBookingHistory.chef_id,
     date: serverBookingHistory.date,

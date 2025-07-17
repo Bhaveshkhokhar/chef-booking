@@ -130,4 +130,4 @@ exports.postHostLogout=async(req,res,next)=>{
       message: "Internal server error during logout",
     });
   }
-}
+};

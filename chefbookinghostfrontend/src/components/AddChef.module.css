@@ -35,6 +35,7 @@
 }
 
 .formGroup input[type="text"],
+.formGroup input[type="password"],
 .formGroup select,
 .formGroup textarea,
 .formGroup input[type="radio"] {

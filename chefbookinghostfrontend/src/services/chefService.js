@@ -1,20 +1,28 @@
 export const getTheChefs = async (signal) => {
   try {
-    const response = await fetch("http://localhost:3001/get-chefs", signal);
+    const response = await fetch("http://localhost:3001/get-chefsHost", {signal,credentials:"include"});
     const data = await response.json();
-    
-    return mapServerChefsToLocalChefs(data);
-  } catch (err) {
-    if (err.name === "AbortError") {
-      console.log("Fetch aborted");
-    } else {
-      console.error("Fetch error:", err);
+     if (!response.ok) {
+      if (response.status === 401) {
+        return { isLoggedIn: false };
+      }
+      if (response.status === 404) {
+        return { isLoggedIn: false };
+      }
+      if (response.status === 500) {
+        throw new Error("Internal server error");
+      }
+      throw new Error("Failed to fetch authentication status");
     }
+    return mapServerChefsToLocalChefs(data.abstractchef);
+  } catch (err) {
+    throw err;
   }
 };
 const mapServerChefsToLocalChefs = (serverChefs) => {
   return serverChefs.map((chef) => {
     return {
+      number:chef.mobile,
       id: chef._id,
       pic: chef.profileImage,
       name: chef.name,

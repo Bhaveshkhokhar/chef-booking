@@ -22,6 +22,9 @@ const Chefcard = ({ chef }) => {
           }}
         >
           <img
+          style={{maxWidth:"100%",
+            maxHeight:"140px"
+          }}
             src={`http://localhost:3001${chef.pic}`}
             class="card-img-top"
             alt={chef.name}

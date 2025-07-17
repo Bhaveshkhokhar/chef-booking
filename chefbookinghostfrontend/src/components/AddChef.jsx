@@ -1,21 +1,24 @@
 import { useContext } from "react";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import style from "./AddChef.module.css";
 import { useState, useRef } from "react";
 import { ChefsStore } from "../store/ChefdataStore";
 import { authContext } from "../store/authStore";
 const AddChef = () => {
-   const navigate = useNavigate();
-  const {handleuserProfile}=useContext(authContext);
+  const navigate = useNavigate();
+  const [available, setAvailable] = useState(null);
+  const { handleuserProfile } = useContext(authContext);
   const { addchef } = useContext(ChefsStore);
   const [previewImg, setPreviewImg] = useState(
     `http://localhost:3001/defaultpic.jpg`
   );
   const [selectedFile, setSelectedFile] = useState(null);
   const fileInputRef = useRef(null);
+  const Number = useRef();
+  const Password = useRef();
+  const Available=useRef();
   const Name = useRef();
   const Price = useRef();
-  const Available = useRef();
   const Type = useRef();
   const Speciality = useRef();
   const Bio = useRef();
@@ -34,11 +37,12 @@ const AddChef = () => {
   };
   const handlesubmit = (e) => {
     e.preventDefault();
-
     const formData = new FormData();
+    formData.append("Number", Number.current.value);
+    formData.append("Password", Password.current.value);
     formData.append("Name", Name.current.value);
     formData.append("Price", Price.current.value);
-    formData.append("Available", Available.current.value);
+    formData.append("Available", available);
     formData.append("Type", Type.current.value);
     formData.append("Speciality", Speciality.current.value);
     formData.append("Bio", Bio.current.value);
@@ -57,21 +61,25 @@ const AddChef = () => {
             alert(data.message);
             if (data.field === "Name") {
               Name.current.focus();
+            } else if (data.field === "Number") {
+              Number.current.focus();
+            } else if (data.field === "Password") {
+              Password.current.focus();
             } else if (data.field === "Price") {
               Price.current.focus();
             } else if (data.field === "Available") {
               Available.current.focus();
             } else if (data.field === "Type") {
               Type.current.focus();
-            }else if (data.field === "Speciality") {
+            } else if (data.field === "Speciality") {
               Speciality.current.focus();
-            }else if (data.field === "Bio") {
+            } else if (data.field === "Bio") {
               Bio.current.focus();
-            }else if (data.field === "Certifications") {
+            } else if (data.field === "Certifications") {
               Certifications.current.focus();
-            }else if (data.field === "Experience") {
+            } else if (data.field === "Experience") {
               Experience.current.focus();
-            }else {
+            } else {
               fileInputRef.current.focus();
             }
             return;
@@ -79,9 +87,17 @@ const AddChef = () => {
             handleuserProfile(false);
             return;
           } else if (res.status == 404) {
-            handleuserProfile(false);
+            if (data.message === "Host not found") {
+              handleuserProfile(false);
+            } else {
+              fileInputRef.current.focus();
+            }
             return;
           } else if (res.status == 500) {
+            alert(data.message);
+            return;
+          }
+          else if (res.status == 409) {
             alert(data.message);
             return;
           }
@@ -93,10 +109,11 @@ const AddChef = () => {
         if (!data) return;
         if (data.status === "success") {
           addchef({
+            number: Number.current.value,
             id: data._id,
             pic: data.profileImage,
             name: Name.current.value,
-            available: Available.current.value,
+            available: available,
             type: Type.current.value,
             rating: 0,
             price: Price.current.value,
@@ -150,6 +167,20 @@ const AddChef = () => {
           <label htmlFor="name">Name</label>
           <input id="name" type="text" name="name" ref={Name} required />
         </div>
+        <div className={style.formGroup}>
+          <label htmlFor="number">Mobile Number</label>
+          <input id="number" type="text" name="number" ref={Number} required />
+        </div>
+        <div className={style.formGroup}>
+          <label htmlFor="password">Password</label>
+          <input
+            id="password"
+            type="password"
+            name="password"
+            ref={Password}
+            required
+          />
+        </div>
 
         <div className={style.formGroup}>
           <label htmlFor="price">Price</label>
@@ -164,8 +195,10 @@ const AddChef = () => {
               type="radio"
               name="availability"
               value="true"
-              ref={Available}
               required
+              checked={available === "true"}
+              ref={Available}
+              onChange={(e) => setAvailable(e.target.value)}
               style={{ marginRight: "5px" }}
             />
             <label htmlFor="available" style={{ marginRight: "20px" }}>
@@ -177,8 +210,9 @@ const AddChef = () => {
               type="radio"
               name="availability"
               value="false"
-              ref={Available}
               required
+              checked={available === "false"}
+              onChange={(e) => setAvailable(e.target.value)}
               style={{ marginRight: "5px" }}
             />
             <label htmlFor="notAvailable">Not Available</label>

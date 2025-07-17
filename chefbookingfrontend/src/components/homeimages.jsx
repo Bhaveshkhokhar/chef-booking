@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 function HomeImages() {
   return (
     <div
-      style={{ position: "relative", borderRadius: "16px", overflow: "hidden" }}
+      style={{ maxWidth:"1000px", position: "relative", borderRadius: "16px", overflow: "hidden", margin:"40px" }}
       className={styles["imagecontainer"]}
     >
       {/* Fixed Caption */}

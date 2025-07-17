@@ -1,4 +1,4 @@
-import { useRef, useState, useContext } from "react";
+import { useRef,useContext } from "react";
 import styles from "./ProfileDetailUpdate.module.css";
 import {
   FaUser,

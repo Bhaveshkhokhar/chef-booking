@@ -78,7 +78,7 @@ const Login = () => {
           {" "}
           <div
             className="modal-content rounded-5 shadow"
-            style={{ backgroundColor: "#e0e7ff", color: "white" }}
+            style={{ backgroundColor: "#e0e7ff", color: "Black" }}
           >
             <div className="w-100 d-flex justify-content-center mt-4 mb-0 ">
               <img
@@ -100,19 +100,18 @@ const Login = () => {
                 }}
               >
                 {" "}
-                <div className="form-floating mb-3">
+                <div className=" mb-3">
                   {" "}
                   <input
                     ref={Hostid}
                     type="text"
                     className="form-control rounded-3"
                     id="floatingInput"
-                    placeholder="user id"
+                    placeholder="User id"
                     required
                   />{" "}
-                  <label htmlFor="floatingInput">User id</label>{" "}
                 </div>{" "}
-                <div className="form-floating mb-3">
+                <div className=" mb-3">
                   {" "}
                   <input
                     ref={Password}
@@ -122,7 +121,6 @@ const Login = () => {
                     placeholder="Password"
                     required
                   />{" "}
-                  <label htmlFor="floatingPassword">Password</label>{" "}
                 </div>{" "}
                 <div className="form-check text-start my-3">
                   {" "}

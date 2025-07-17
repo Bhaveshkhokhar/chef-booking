@@ -8,8 +8,9 @@
   padding: 40px;
   border-radius: 16px;
   max-height: 400px;
-  max-width: 1050px;
+  max-width: 1000px;
   color: white;
+  margin: 40px;
 }
 
 .bannerContent {

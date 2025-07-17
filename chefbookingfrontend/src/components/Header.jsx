@@ -66,28 +66,30 @@ const Header = () => {
           </button>
 
           <div className={`collapse navbar-collapse${menuOpen ? " show" : ""}`}>
+            <center>
             <ul className="navbar-nav mx-auto mb-2 mb-lg-0">
               <li className="nav-item">
                 <Link to="/" className="nav-link px-3">
-                  Home
+                 <b> Home</b>
                 </Link>
               </li>
               <li className="nav-item">
                 <Link to="/chefs/All Chefs" className="nav-link px-3">
-                  All Chefs
+                 <b> All Chefs</b>
                 </Link>
               </li>
               <li className="nav-item">
                 <Link to="/contact" className="nav-link px-3">
-                  Contact
+                 <b> Contact</b>
                 </Link>
               </li>
               <li className="nav-item">
                 <Link to="/about-us" className="nav-link px-3">
-                  About Us
+                 <b>About Us</b>
                 </Link>
               </li>
             </ul>
+            </center>
             {/* Hamburger menu (mobile): show below links */}
             {/* Hamburger menu (mobile): show below links, left-aligned */}
             <div className="w-100 d-lg-none d-block mt-3 ps-3">

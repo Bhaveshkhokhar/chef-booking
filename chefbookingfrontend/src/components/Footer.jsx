@@ -36,17 +36,26 @@ const Footer = () => {
                       </Link>
                     </li>
                     <li className="nav-item mb-2">
-                      <Link to="chefs/All Chefs" className="nav-link p-0 text-body-secondary">
+                      <Link
+                        to="chefs/All Chefs"
+                        className="nav-link p-0 text-body-secondary"
+                      >
                         All Chefs
                       </Link>
                     </li>
                     <li className="nav-item mb-2">
-                      <Link to="/contact" className="nav-link p-0 text-body-secondary">
+                      <Link
+                        to="/contact"
+                        className="nav-link p-0 text-body-secondary"
+                      >
                         Contact
                       </Link>
                     </li>
                     <li className="nav-item mb-2">
-                      <Link to="/about-us" className="nav-link p-0 text-body-secondary">
+                      <Link
+                        to="/about-us"
+                        className="nav-link p-0 text-body-secondary"
+                      >
                         About Us
                       </Link>
                     </li>
@@ -55,9 +64,18 @@ const Footer = () => {
                 <div className="col-12 col-md-3">
                   <h5>GET IN TOUCH</h5>
                   <ul className="nav flex-column">
-                    <li className="nav-item mb-2">9968133855</li>
                     <li className="nav-item mb-2">
-                      bhaveshkhokhar54@gmail.com
+                      <a
+                        href="tel:+919968133855"
+                        style={{ color: "black", textDecoration: "none" }}
+                      >
+                        9968133855
+                      </a>
+                    </li>
+                    <li className="nav-item mb-2">
+                      <a href="mailto:bhaveshkhokhar54@gmail.com" style={{ color: "black", textDecoration: "none" }} >
+                        bhaveshkhokhar54@gmail.com
+                      </a>
                     </li>
                   </ul>
                 </div>

@@ -13,12 +13,13 @@ const Chefcard = ({ chef }) => {
           className="card"
           style={{
             width: "230px",
-            height: "400px",
+            height: "430px",
             background: "#e0e7ff",
             margin: "20px",
           }}
         >
           <img
+            style={{maxWidth:"100%",maxHeight:"170px"}}
             src={`http://localhost:3001${chef.pic}`}
             className="card-img-top"
             alt={chef.name}
@@ -26,8 +27,9 @@ const Chefcard = ({ chef }) => {
           <div className="card-body" style={{ textAlign: "left" }}>
             <h6 className="card-title">{chef.name}</h6>
             <div className="card-text">
-              <p style={{ margin: "2px" }}>speciality: {chef.speciality}</p>
-              <p style={{ margin: "2px" }}>service: {chef.type}</p>
+              <p style={{ margin: "2px" }}>Mobile: {chef.number}</p>
+              <p style={{ margin: "2px" }}>Speciality: {chef.speciality}</p>
+              <p style={{ margin: "2px" }}>Service: {chef.type}</p>
               <p style={{ margin: "2px" }}>
                 {"★".repeat(filledStars)}
                 {hasHalfStar && "⯪"}
@@ -36,11 +38,11 @@ const Chefcard = ({ chef }) => {
                 <span className="text-muted small"> {chef.rating}</span>
               </p>
               <li className={`${chef.available ? styles["green"] : styles["red"]}`}>
-                {chef.available ? "available" : "not available"}
+                {chef.available ? "Available" : "Not Available"}
               </li>
               
               <button className={`btn ${styles["button"]}`} onClick={()=>{changeAvailability(chef.id,chef.available)}}>
-                Change Aviability
+                Change Availability
               </button>
             </div>
           </div>

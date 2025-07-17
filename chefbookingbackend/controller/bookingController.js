@@ -9,6 +9,115 @@ const gstRate = 0.18;
 require("dotenv").config();
 const secret = process.env.SECRET_KEY;
 
+exports.chefBookingUpdate=async(req,res,next)=>{
+  const token = req.cookies.chef_token;
+  if (!token) {
+    return res.status(401).json({
+      isLoggedIn: false,
+      message: "please login",
+    });
+  }
+  try {
+    let decoded;
+    try {
+      decoded = jwt.verify(token, secret);
+      // token is valid
+    } catch (err) {
+      // token is invalid or expired
+      return res.status(401).json({
+        isLoggedIn: false,
+        message: "Chef is not authenticated please login",
+      });
+    }
+
+    const booking = await Booking.findByIdAndDelete({
+      _id: req.body.id,
+    });
+    if (!booking) {
+      return res
+        .status(404)
+        .json({ message: "Booking not found", id: req.body.id });
+    }
+    const bookinghistory = new BookingHistory({
+      chef_id: booking.chef_id,
+      user_id: booking.user_id,
+      totalPrice: booking.totalPrice,
+      date: booking.date,
+      time: booking.time,
+      Address: booking.Address,
+      modeOfPayment: booking.modeOfPayment,
+      bookedAt: booking.bookedAt,
+      status: req.body.action,
+    });
+    await bookinghistory.save();
+    return res.status(201).json({
+      status: "success",
+    });
+  } catch (error) {
+    console.error("Error while cancel booking:", error);
+    return res
+      .status(500)
+      .json({ message: "Internal server error please try after some time" });
+  }
+}
+
+exports.getChefBookings= async (req, res, next) => {
+  const token = req.cookies.chef_token;
+  if (!token) {
+    return res.status(401).json({
+      isLoggedIn: false,
+      message: "please login",
+    });
+  }
+  try {
+    let decoded;
+    try {
+      decoded = jwt.verify(token, secret);
+      // token is valid
+    } catch (err) {
+      // token is invalid or expired
+      return res.status(401).json({
+        isLoggedIn: false,
+        message: "Chef is not authenticated please login",
+      });
+    }
+
+    const existingChef = await Chef.findOne({ mobile: decoded.Number });
+
+    if (!existingChef) {
+      return res.status(404).json({
+        isLoggedIn: false,
+        message: "Chef not found in Database",
+      });
+    }
+    const bookings = await Booking.find({ chef_id: existingChef._id }).populate(
+      "user_id",
+      "name mobile"
+    );
+    const data=bookings.map((booking)=>{
+      return {
+        id:booking._id,
+        user:booking.user_id,
+        date:booking.date,
+        time:booking.time,
+        price:booking.totalPrice,
+        address:booking.Address,
+        modeOfPayment:booking.modeOfPayment,
+      }
+    })
+
+    return res.status(201).json({
+      BookingData: data,
+      status: "success",
+    });
+  } catch (error) {
+    console.error("Error while send user detail:", error);
+    return res
+      .status(500)
+      .json({ message: "Internal server error please try after some time" });
+  }
+};
+
 exports.hostCancelBooking=async(req,res,next)=>{
   const token = req.cookies.host_token;
   if (!token) {
@@ -68,6 +177,7 @@ exports.hostCancelBooking=async(req,res,next)=>{
       .json({ message: "Internal server error please try after some time" });
   }
 };
+
 exports.getBooking = async (req, res, next) => {
   const token = req.cookies.host_token;
   if (!token) {
@@ -133,6 +243,7 @@ exports.getBooking = async (req, res, next) => {
       .json({ message: "Internal server error please try after some time" });
   }
 };
+
 exports.getYourBookings = async (req, res, next) => {
   const token = req.cookies.user_token;
   if (!token) {
@@ -164,7 +275,7 @@ exports.getYourBookings = async (req, res, next) => {
     }
     const bookings = await Booking.find({ user_id: existingUser._id }).populate(
       "chef_id",
-      "name profileImage _id type"
+      "name profileImage _id type mobile"
     );
 
     return res.status(201).json({
@@ -273,6 +384,7 @@ exports.getBookingTime = async (req, res, next) => {
       .json({ message: "Internal server error please try after some time" });
   }
 };
+
 exports.getPreBookingInfo = async (req, res, next) => {
   const token = req.cookies.user_token;
   if (!token) {
@@ -348,6 +460,7 @@ exports.getPreBookingInfo = async (req, res, next) => {
       .json({ message: "Internal server error please try after some time" });
   }
 };
+
 exports.confirmBooking = async (req, res, next) => {
   const today = new Date();
   const yyyy = today.getFullYear();
@@ -431,7 +544,7 @@ exports.confirmBooking = async (req, res, next) => {
       Address: req.body.address,
       modeOfPayment: req.body.modeOfPayment,
       bookedAt: new Date(),
-      paid: req.body.modeOfPayment === "cod" ? false : true,
+      paid: req.body.modeOfPayment === "COD" ? false : true,
     });
     const confirmbooking = await booking.save();
     const populatedConfirmBooking = await Booking.findById(

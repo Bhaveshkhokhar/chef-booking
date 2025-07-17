@@ -34,13 +34,13 @@ const PreBooking = () => {
     if (loginstate) {
       if (user.status) {
         if (location.state) {
-          if (paymentMethod === "cod") {
+          if (paymentMethod === "COD") {
             fetch(" http://localhost:3001/confirmBooking", {
               method: "POST",
               credentials: "include",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
-                modeOfPayment: "cod",
+                modeOfPayment: "COD",
                 chefid,
                 date,
                 time,
@@ -185,12 +185,12 @@ const PreBooking = () => {
               type="radio"
               name="paymentMethod"
               id="cod"
-              value="cod"
-              checked={paymentMethod === "cod"}
-              onChange={() => setPaymentMethod("cod")}
+              value="COD"
+              checked={paymentMethod === "COD"}
+              onChange={() => setPaymentMethod("COD")}
             />
             <label className="form-check-label" htmlFor="cod">
-              Pay on Delivery(cash on delivery/upi on delivery)
+              Pay on Delivery(Cash on delivery/UPI on delivery)
             </label>
           </div>
         </div>

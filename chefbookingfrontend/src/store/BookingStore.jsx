@@ -41,7 +41,7 @@ const BookingProvider = ({ children }) => {
   };
 
   const handleCancelBooking = (booking_id) => {
-    cancelBooking(booking_id, handleuserProfile).then((data) => {
+    cancelBooking(booking_id, handleuserProfile,dispatch).then((data) => {
       const action = {
         type: "delete",
         payload: {

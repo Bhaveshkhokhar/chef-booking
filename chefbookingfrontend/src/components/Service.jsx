@@ -9,11 +9,11 @@ const Service = () => {
     <>
       <h2>Our Services</h2>
       <p>Simply browse through our extensive list of trusted chef</p>
-        <div className="row">
+        <div style={{display:"flex" ,justifyContent:"space-evenly",
+          flexWrap:"wrap",maxWidth:"1021px",margin:"40px"
+        }}>
           {ser.map((service, idx) => (
-            <div className="col-12 col-sm-6 col-md-4 col-lg-3 mb-4" key={idx}>
-              <ServiceCard service={service} />
-            </div>
+              <ServiceCard key={idx} service={service} />
           ))}
         </div>
     </>

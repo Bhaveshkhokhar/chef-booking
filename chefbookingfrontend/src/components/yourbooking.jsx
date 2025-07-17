@@ -11,7 +11,7 @@ const Yourbooking = () => {
   const location=useLocation();
   const { bookingdata, handleCancelBooking } = useContext(BookingStore);
   const sortedBookings = [...bookingdata].sort(
-    (a, b) => new Date(a.date) - new Date(b.date)
+    (a, b) => new Date(b.date) - new Date(a.date)
   );
   if(!loginstate){
     return <Navigate to="/login" replace state={{ from: location }} />
@@ -38,14 +38,13 @@ const Yourbooking = () => {
                     }}
                   />
                   <h2>{booking.chefDetail.name}</h2>
-                  <div>
-                    <h5 className="mb-0">{booking.chefName}</h5>
-                    <small className="text-muted">{booking.speciality}</small>
-                  </div>
                 </div>
                 <div>
                   <p className="mb-1">
-                    <strong>booked at :</strong> {booking.bookedAt}
+                    <strong>Booked at :</strong> {booking.bookedAt}
+                  </p>
+                  <p className="mb-1">
+                    <strong>Contact Detail of Chef :</strong> {booking.chefDetail.mobile}
                   </p>
                   <p className="mb-1">
                     <strong>Date Of Booking :</strong> {booking.date}

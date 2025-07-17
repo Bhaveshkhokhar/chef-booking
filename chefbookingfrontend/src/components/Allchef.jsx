@@ -15,11 +15,11 @@ const Allchef = () => {
   const {chefs} =useContext(ChefsStore);
   return (
     <>
-      <div className={`${styles["chefs"]}`} style={{ margin: "30px 50px" }}>
+      <div className={`${styles["chefs"]}`} style={{ margin: "30px 80px" }}>
         <div >
           <div className="row">
-            <h1 style={{ margin: "0px 0px 20px 0px ", textAlign: "left" }}>
-              Find the perfect chef for every flavor and event.
+            <h1 style={{ margin: "0px 0px 20px 0px ", textAlign: "center" ,textTransform: "capitalize", fontSize:"30PX"}}>
+              <u>FIND THE PERFECT CHEF FOR EVERY FLAVOR AND EVENT.</u>
             </h1>
           </div>
           <div className="row">

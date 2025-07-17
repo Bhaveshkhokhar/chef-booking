@@ -7,7 +7,7 @@ const BookingHistory = () => {
   const { bookinghistory } = useContext(BookingHistoryStore);
   const{loginstate}=useContext(authContext);
   const sortedBookings = [...bookinghistory].sort(
-    (a, b) => new Date(a.date) - new Date(b.date)
+    (a, b) => new Date(b.date) - new Date(a.date)
   );
   const location=useLocation();
    if(!loginstate){

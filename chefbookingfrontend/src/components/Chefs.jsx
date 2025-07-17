@@ -3,13 +3,13 @@ import styles from "./Chefs.module.css"
 const Chefs = ({ type, chefs }) => {
   return (
     <>
-      <div style={{ margin: "0px 0px 0px 10px" }} className={`${styles["cantainer"]}`}>
+      <div style={{ margin: "10px 0px 0px 10px" }} className={`${styles["cantainer"]}`}>
         {chefs.map(
-          (chef) =>
+          (chef,indx) =>
             (chef.type === type || type == "All Chefs") && (
-              <div  key={chef.id} class="col justtify-content-start">
-                <Chefcard chef={chef} />
-              </div>
+             
+                <Chefcard key={indx} chef={chef} />
+              
             )
         )}
       </div>

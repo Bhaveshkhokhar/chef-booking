@@ -143,7 +143,7 @@ exports.userProfilePicUpdate = async (req, res, next) => {
     return res.status(201).json({
       status: "success",
       message: "Profile Image is updated",
-      image:req.file?`/upload/${req.file.filename}`:"/defaultpic.jpg",
+      image:existingUser.profileImage,
     });
   } catch (error) {
     console.error("Error add user details:", error);

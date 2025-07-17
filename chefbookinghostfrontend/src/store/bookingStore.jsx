@@ -6,37 +6,46 @@ export const bookingContext = createContext({
   cancelBooking: () => {},
 });
 const BookingContextProvider = ({ children }) => {
-  const{handleuserProfile}=useContext(authContext);
+  const { handleuserProfile } = useContext(authContext);
   const [bookings, setBooking] = useState([]);
   const addBooking = (data) => {
     const bookingdata = [...data];
     setBooking(bookingdata);
-   
   };
   const cancelBooking = (id) => {
-    fetch("http://localhost:3001/hostbookingcancel",{
-      credentials:"include",
-      method:"POST",
-      body:JSON.stringify({
+    fetch("http://localhost:3001/hostbookingcancel", {
+      credentials: "include",
+      method: "POST",
+      body: JSON.stringify({
         id,
       }),
-      headers:{
-        "Content-Type":"application/json",
-      }
-    }).then(async (res) => {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then(async (res) => {
         const data = await res.json();
         if (!res.ok) {
           alert(data.message);
           if (res.status === 401) {
             handleuserProfile(false);
+            return;
           }
           if (res.status === 404) {
             if (data.message === "Host not found") {
               handleuserProfile(false);
+            } else {
+              const book = bookings.filter((booking) => {
+                return booking.id !== id
+                
+              });
+              console.log(bookings);
+              setBooking(book);
             }
+            return;
           }
           if (res.status === 500) {
-            throw new Error("Internal server error");
+            return;
           }
           throw new Error("Failed to update status");
         }
@@ -49,7 +58,7 @@ const BookingContextProvider = ({ children }) => {
             if (booking.id == id) {
               return {
                 ...booking,
-                status:"cancelled",
+                status: "cancelled",
               };
             } else {
               return booking;
@@ -60,8 +69,8 @@ const BookingContextProvider = ({ children }) => {
         }
       })
       .catch((err) => {
-         console.error("Error during updating status of Booking:", err);
-          alert("An error occurred during updating status. Please try again.");
+        console.error("Error during updating status of Booking:", err);
+        alert("An error occurred during updating status. Please try again.");
       });
   };
   useEffect(() => {
