@@ -8,6 +8,7 @@ Chef Wale is a multi-role chef booking platform built with React.js, Node.js, Ex
 - [Features](#features)
 - [Tech Stack](#tech-stack)
 - [Setup](#setup)
+- [Controllers and Endpoints](#Controllers-and-Endpoints)
 - [Usage](#usage)
 - [Contributing](#contributing)
 - [License](#license)
@@ -87,6 +88,10 @@ Chef Wale connects users with chefs for events, allowing bookings, cancellations
    cd ../chefbookinghostfrontend
    npm run dev
    ```
+## Controllers and Endpoints
+
+### updated soon
+
 
 ## Usage
 
