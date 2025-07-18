@@ -41,7 +41,7 @@ Chef Wale connects users with chefs for events, allowing bookings, cancellations
 
 ## Tech Stack
 
-- **Frontend:** React.js
+- **Frontend:** React.js,bootstrap
 - **Backend:** Node.js, Express.js
 - **Database:** MongoDB (using Mongoose)
 
@@ -49,15 +49,21 @@ Chef Wale connects users with chefs for events, allowing bookings, cancellations
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/Bhaveshkhokhar/chef-wale.git
+   git clone https://github.com/Bhaveshkhokhar/chef-booking.git
    ```
 
 2. **Install dependencies for both frontend and backend:**
    ```bash
-   cd chef-wale/frontend
+   cd chef-booking/chefbookingfrontend
    npm install
 
-   cd ../backend
+   cd ../chefbookingcheffrontend
+   npm install
+
+   cd ../chefbookinghostfrontend
+   npm install
+
+   cd ../chefbookingbackend
    npm install
    ```
 
@@ -66,21 +72,27 @@ Chef Wale connects users with chefs for events, allowing bookings, cancellations
 
 4. **Start the backend server:**
    ```bash
-   cd backend
+   cd chefbookingbackend
    npm start
    ```
 
 5. **Start the frontend server:**
    ```bash
-   cd ../frontend
-   npm start
+   cd ../chefbookingfrontend
+   npm run dev
+
+   cd ../chefbookingcheffrontend
+   npm run dev
+
+   cd ../chefbookinghostfrontend
+   npm run dev
    ```
 
 ## Usage
 
 - **User Portal:** Register/login, book chefs, manage bookings, update profile.
-- **Host Portal:** Manage users/chefs, handle bookings, track history.
-- **Chef Portal:** Login, view bookings/income, manage availability, update profile.
+- **Host Portal:** Manage users/chefs, handle bookings, track history,blocked and unblocked users account,make chef available and unavailable.
+- **Chef Portal:** Login, view bookings/income, cancel and complete booking, update profile.
 
 ## Contributing
 
