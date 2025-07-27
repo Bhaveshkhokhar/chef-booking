@@ -10,7 +10,7 @@ const PreBooking = () => {
   const { user } = useContext(UserStore);
   const { handleAddBooking } = useContext(BookingStore);
   const { loginstate, handleuserProfile } = useContext(authContext);
-  const [paymentMethod, setPaymentMethod] = useState("online");
+  const [paymentMethod, setPaymentMethod] = useState("COD");
   const address = useRef();
   const location = useLocation();
   const navigate = useNavigate();
@@ -165,20 +165,6 @@ const PreBooking = () => {
           >
             Payment Method:
           </label>
-          <div className="form-check mb-2">
-            <input
-              className="form-check-input"
-              type="radio"
-              name="paymentMethod"
-              id="online"
-              value="online"
-              checked={paymentMethod === "online"}
-              onChange={() => setPaymentMethod("online")}
-            />
-            <label className="form-check-label" htmlFor="online">
-              Online Payment
-            </label>
-          </div>
           <div className="form-check">
             <input
               className="form-check-input"
@@ -191,6 +177,20 @@ const PreBooking = () => {
             />
             <label className="form-check-label" htmlFor="cod">
               Pay on Delivery(Cash on delivery/UPI on delivery)
+            </label>
+          </div>
+          <div className="form-check mb-2">
+            {/* <input
+              className="form-check-input"
+              type="radio"
+              name="paymentMethod"
+              id="online"
+              value="online"
+              checked={paymentMethod === "online"}
+              onChange={() => setPaymentMethod("online")}
+            /> */}
+            <label className="form-check-label" htmlFor="online">
+              Online Payment Will be available soon
             </label>
           </div>
         </div>
